@@ -1,2 +1,4 @@
 taskcat_outputs/
 .taskcat_overrides.yml
+.taskcat/
+*.zip
