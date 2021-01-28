@@ -113,11 +113,11 @@ Resources:
       SourceBucket: !Ref 'QSS3BucketName'
       Prefix: !Ref 'QSS3KeyPrefix'
       Objects:
-        - functions/packages/cfn-resources/mongodb-atlas-project.zip
-        - functions/packages/cfn-resources/mongodb-atlas-cluster.zip
-        - functions/packages/cfn-resources/mongodb-atlas-networkpeering.zip
-        - functions/packages/cfn-resources/mongodb-atlas-projectipaccesslist.zip
-        - functions/packages/cfn-resources/mongodb-atlas-databaseuser.zip
+        - functions/packages/quickstart-mongodb-atlas-resources/mongodb-atlas-project.zip
+        - functions/packages/quickstart-mongodb-atlas-resources/mongodb-atlas-cluster.zip
+        - functions/packages/quickstart-mongodb-atlas-resources/mongodb-atlas-networkpeering.zip
+        - functions/packages/quickstart-mongodb-atlas-resources/mongodb-atlas-projectipaccesslist.zip
+        - functions/packages/quickstart-mongodb-atlas-resources/mongodb-atlas-databaseuser.zip
 
   CopyZipsRole:
     Type: AWS::IAM::Role
@@ -272,7 +272,7 @@ Resources:
               return cfnresponse.SUCCESS, p['TypeVersionArn']
 
           def register(cfn, type_name, archive_name):
-              schema_package = "s3://${LambdaZipsBucket}/${QSS3KeyPrefix}functions/packages/cfn-resources/{}".format(archive_name)
+              schema_package = "s3://${LambdaZipsBucket}/${QSS3KeyPrefix}functions/packages/quickstart-mongodb-atlas-resources/{}".format(archive_name)
               print("Registering schema package: {} for type: {}".format(schema_package, type_name))
               response = cfn.register_type(
                   Type='RESOURCE',
