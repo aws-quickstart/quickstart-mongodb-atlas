@@ -118,7 +118,7 @@ Parameters:
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
-  CustomLambdaStack:
+  RegisterAtlasResources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
