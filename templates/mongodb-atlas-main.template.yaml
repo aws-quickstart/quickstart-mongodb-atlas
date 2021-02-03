@@ -16,6 +16,7 @@ Parameters:
   PrivateKey:
     Description: "Your MongoDB Cloud Private API Key"
     Type: String
+    NoEcho: true
     Default: "PrivateKey"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
@@ -27,7 +28,7 @@ Parameters:
     Type: String
     Default: "Cluster-1"
   ClusterInstanceSize:
-    Default: "M10" 
+    Default: "M10"
     Description: Atlas provides different cluster tiers, each with a default storage capacity and RAM size. The cluster you select is used for all the data-bearing hosts in your cluster tier. See https://docs.atlas.mongodb.com/reference/amazon-aws/#amazon-aws.
     Type: String
     AllowedValues:
@@ -91,6 +92,13 @@ Parameters:
     - "4.0"
     - "4.2"
     - "4.4"
+  RegisterMongoDBResources:
+    Description: Chose Yes to register MongoDB Atlas CloudFormation resource types. If you have already registered the resources in this AWS Region, you may choose No.
+    Type: String
+    Default: "Yes"
+    AllowedValues:
+      - "No"
+      - "Yes"
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
@@ -117,14 +125,63 @@ Parameters:
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  RegisterResources: !Equals [!Ref RegisterMongoDBResources, 'Yes']
 Resources:
   RegisterAtlasResources:
+    Condition: RegisterResources
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/custom_lambda.template.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/register-mongodb-atlas-resources.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+  AtlasStack:
+    Type: AWS::CloudFormation::Stack
+    Metadata:
+      PseudoDependsOn: !If
+        - RegisterResources
+        - - !Ref RegisterAtlasResources
+        - ''
+    DependsOn: RegisterAtlasResources
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-atlas.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        ClusterInstanceSize: !Ref ClusterInstanceSize
+        ClusterMongoDBMajorVersion: !Ref ClusterMongoDBMajorVersion
+        ClusterName: !Ref ClusterName
+        ClusterRegion: !Ref ClusterRegion
+        EnableSecretForApiKey: !Ref EnableSecretForApiKey
+        OrgId: !Ref OrgId
+        PrivateKey: !Ref PrivateKey
+        PublicKey: !Ref PublicKey
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+Outputs:
+  AtlasIAMRole:
+    Description: "ARN for AWS IAM Role database cluster access"
+    Value: !GetAtt "AtlasStack.Outputs.AtlasIAMRole"
+  AtlasDatabaseUser:
+    Description: "Atlas database user, configured for AWS IAM Role access."
+    Value: !GetAtt "AtlasStack.Outputs.AtlasDatabaseUser"
+  AtlasProject:
+    Description: "Info on your Atlas deployment"
+    Value: !GetAtt "AtlasStack.Outputs.AtlasProject"
+  AtlasProjectIPAccessList:
+    Description: "Atlas project ip access list"
+    Value: !GetAtt "AtlasStack.Outputs.AtlasProjectIPAccessList"
+  AtlasCluster:
+    Description: "Info on your Atlas Cluster"
+    Value: !GetAtt "AtlasStack.Outputs.AtlasCluster"
+  ClusterState:
+    Description: "Cluster State"
+    Value: !GetAtt "AtlasStack.Outputs.ClusterState"
+  ClusterSrvAddress:
+    Description: "Hostname for mongodb+srv:// connection string"
+    Value: !GetAtt "AtlasStack.Outputs.ClusterSrvAddress"
