@@ -32,5 +32,5 @@ tests:
       AvailabilityZones: $[taskcat_genaz_2]
       #RemoteAccessCIDR: 10.0.0.0/16
     s3_bucket: ''
-    template: mongodb-atlas-peering-newvpc.template.yaml
+    template: templates/mongodb-atlas-peering-newvpc.template.yaml
 
