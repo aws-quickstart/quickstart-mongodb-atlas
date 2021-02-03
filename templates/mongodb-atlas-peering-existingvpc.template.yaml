@@ -188,9 +188,6 @@ Resources:
         PublicKey: !Ref PublicKey
         RouteTableCIDRBlock: !Ref RouteTableCIDRBlock
         VPC: !Ref VPC
-        QSS3BucketName: !Ref QSS3BucketName
-        QSS3BucketRegion: !Ref QSS3BucketRegion
-        QSS3KeyPrefix: !Ref QSS3KeyPrefix
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM Role database cluster access"
