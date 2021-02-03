@@ -29,6 +29,7 @@ tests:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
       RouteTableCIDRBlock: 10.0.0.0/16
+      AvailabilityZones: $[taskcat_genaz_2]
       #RemoteAccessCIDR: 10.0.0.0/16
     s3_bucket: ''
     template: mongodb-atlas-peering-newvpc.template.yaml
