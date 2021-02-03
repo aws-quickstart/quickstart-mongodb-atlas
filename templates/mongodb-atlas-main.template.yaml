@@ -145,7 +145,6 @@ Resources:
         - RegisterResources
         - - !Ref RegisterAtlasResources
         - ''
-    DependsOn: RegisterAtlasResources
     Properties:
       TemplateURL: !Sub
         - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-atlas.template.yaml'

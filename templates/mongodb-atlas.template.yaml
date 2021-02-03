@@ -148,16 +148,6 @@ Parameters:
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
-  RegisterAtlasResources:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/custom_lambda.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Ref QSS3KeyPrefix
   AtlasApiKeySecret:
     Type: 'AWS::SecretsManager::Secret'
     Properties:
@@ -172,7 +162,6 @@ Resources:
         Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
-    DependsOn: CustomLambdaStack 
     Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17

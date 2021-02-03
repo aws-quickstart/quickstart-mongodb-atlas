@@ -207,6 +207,7 @@ Resources:
         VPCCIDR: !Ref VPCCIDR
   AtlasPeeringStack:
     Type: AWS::CloudFormation::Stack
+    DependsOn: VPCStack
     Properties:
       TemplateURL: !Sub
         - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-atlas-peering-existingvpc.template.yaml'
