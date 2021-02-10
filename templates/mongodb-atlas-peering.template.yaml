@@ -8,9 +8,9 @@ Metadata:
         default: Network Configuration
       Parameters:
       - VPC
-      - AccessList
+      - RouteTableCIDRBlock
     - Label:
-        default: Security Configuration
+        default: MongoDB Atlas ApiKey Configuration
       Parameters:
       - PublicKey
       - PrivateKey 
@@ -22,13 +22,24 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - AccessList
     ParameterLabels:
+      VPC:
+        default: VPC-id to peer with Atlas cluster
+      RouteTableCIDRBlock:
+        default: CIDR block for app to use in VPC Peering.
+      PublicKey:
+        default: MongoDB Atlas API PublicKey
+      PrivateKey:
+        default: MongoDB Atlas API PrivateKey
+      OrgId:
+        default: MongoDB Atlas API OrgId
       ProjectName:
-        default: atlas-cfn-quickstart
+        default: Name of new Atlas Project
       ClusterName:
-        default: cluster-1
+        default: Name of new cluster
       ClusterRegion:
-        default: us-east-1
+        default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
 Parameters:
@@ -125,7 +136,7 @@ Resources:
     Type: 'AWS::SecretsManager::Secret'
     Properties:
       Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: This secret has a hardcoded password in SecretString, how can i make this optional?
+      Description: MongoDB Atlas API Key
       #
       # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
       #

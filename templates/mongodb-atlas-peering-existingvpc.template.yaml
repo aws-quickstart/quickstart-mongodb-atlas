@@ -8,9 +8,9 @@ Metadata:
         default: Network Configuration
       Parameters:
       - VPC
-      - AccessList
+      - RouteTableCIDRBlock
     - Label:
-        default: Security Configuration
+        default: MongoDB Atlas ApiKey Configuration
       Parameters:
       - PublicKey
       - PrivateKey 
@@ -18,17 +18,43 @@ Metadata:
     - Label:
         default: MongoDB Atlas Configuration
       Parameters:
+      - RegisterMongoDBResources
       - ProjectName
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - AccessList
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
+      - QSS3BucketRegion
     ParameterLabels:
+      VPC:
+        default: AWS VPC to peer with
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      QSS3BucketRegion:
+        default: Quick Start S3 Bucket Region
+      RouteTableCIDRBlock:
+        default: CIDR block for app to use in VPC Peering, passed to network-peering resource
+      PublicKey:
+        default: MongoDB Atlas API PublicKey
+      PrivateKey:
+        default: MongoDB Atlas API PrivateKey
+      OrgId:
+        default: MongoDB Atlas API OrgId
+      RegisterMongoDBResources:
+        default: Y/M Deploy the MongoDB Atlas CloudFormation Resources
       ProjectName:
-        default: atlas-cfn-quickstart
+        default: Name of new Atlas Project
       ClusterName:
-        default: cluster-1
+        default: Name of new cluster
       ClusterRegion:
-        default: us-east-1
+        default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
 Parameters:
