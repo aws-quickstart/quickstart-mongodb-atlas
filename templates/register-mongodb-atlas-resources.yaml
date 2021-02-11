@@ -378,7 +378,10 @@ Resources:
                               cfn.deregister_type(Arn=physical_id)
                           except Exception:
                               logging.error('Failed to deregister individual version %s. Trying to deregister type.', physical_id)
+                          try:
                               cfn.deregister_type(Type='RESOURCE', TypeName=type_name)
+                          except Exception:
+                              logging.error('******  WARNING Failed to to deregister type %s', type_name)
                       else:
                           cfn.deregister_type(Type='RESOURCE', TypeName=type_name)
               except Exception:

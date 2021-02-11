@@ -250,7 +250,7 @@ Resources:
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
         PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
         VPCCIDR: !Ref VPCCIDR
-  AtlasPeeringStack:
+  Atlas:
     Type: AWS::CloudFormation::Stack
     DependsOn: VPCStack
     Properties:
@@ -276,26 +276,26 @@ Resources:
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM Role database cluster access"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasIAMRole"
+    Value: !GetAtt "Atlas.Outputs.AtlasIAMRole"
   AtlasDatabaseUser:
     Description: "Atlas database user, configured for AWS IAM Role access."
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasDatabaseUser"
+    Value: !GetAtt "Atlas.Outputs.AtlasDatabaseUser"
   AtlasProject:
     Description: "Info on your Atlas deployment"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasProject"
+    Value: !GetAtt "Atlas.Outputs.AtlasProject"
   AtlasProjectIPAccessList:
     Description: "Atlas project ip access list"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasProjectIPAccessList"
+    Value: !GetAtt "Atlas.Outputs.AtlasProjectIPAccessList"
   AtlasCluster:
     Description: "Info on your Atlas Cluster"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasCluster"
+    Value: !GetAtt "Atlas.Outputs.AtlasCluster"
   ClusterState:
     Description: "Cluster State"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.ClusterState"
+    Value: !GetAtt "Atlas.Outputs.ClusterState"
   ClusterSrvAddress:
     Description: "Hostname for mongodb+srv:// connection string"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.ClusterSrvAddress"
+    Value: !GetAtt "Atlas.Outputs.ClusterSrvAddress"
   AtlasNetworkPeering:
     Description: "Info on the network peering connection"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasNetworkPeering"
+    Value: !GetAtt "Atlas.Outputs.AtlasNetworkPeering"
 
