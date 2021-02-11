@@ -1,33 +1,36 @@
+general:
+  s3_regional_buckets: true
 project:
   name: quickstart-mongodb-atlas
   owner: quickstart-eng@amazon.com
   package_lambda: true
-  regions:
-  - us-east-1
-  #s3_bucket: 'mytcat'
   lambda_source_path: functions/source
   lambda_zip_path: functions/packages
   shorten_stack_name: true
 tests:
   mdb-atlas:
+    regions:
+    - us-east-1
     parameters:
       PublicKey: override
       PrivateKey: override
       OrgId: override
+      ProjectName: tcat-$[taskcat_random-string]-$[taskcat_current_region]
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-    #s3_bucket: 'mytcat'
     template: templates/mongodb-atlas-main.template.yaml
   mdb-atlas-vpc:
+    regions:
+    - us-east-2
     parameters:
       PublicKey: override
       PrivateKey: override
       OrgId: override
+      ProjectName: tcat-$[taskcat_random-string]-$[taskcat_current_region]
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
       RouteTableCIDRBlock: 10.8.0.0/21
       AvailabilityZones: $[taskcat_genaz_2]
-      RegisterAtlasResources: No
-      #RemoteAccessCIDR: 10.0.0.0/16
+      #RegisterAtlasResources: No
     template: templates/mongodb-atlas-peering-newvpc.template.yaml
 

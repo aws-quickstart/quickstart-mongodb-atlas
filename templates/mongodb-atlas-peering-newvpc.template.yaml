@@ -123,6 +123,10 @@ Parameters:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
     Default: "OrgId"
+  ProjectName:
+    Description: "The name of the project."
+    Type: String
+    Default: "aws-quickstart-newvpc"
   ClusterName:
     Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
       its name cannot be changed.
@@ -261,6 +265,7 @@ Resources:
       Parameters:
         ClusterInstanceSize: !Ref ClusterInstanceSize
         ClusterMongoDBMajorVersion: !Ref ClusterMongoDBMajorVersion
+        ProjectName: !Ref ProjectName
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId

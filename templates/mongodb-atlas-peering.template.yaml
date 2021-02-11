@@ -23,6 +23,7 @@ Metadata:
       - ClusterRegion
       - ClusterInstanceSize
       - AccessList
+      - DatabaseUserRoleDatabaseName
     ParameterLabels:
       VPC:
         default: VPC-id to peer with Atlas cluster
@@ -42,6 +43,8 @@ Metadata:
         default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
+      DatabaseUserRoleDatabaseName:
+        default: MongoDB Atlas Database User Role Database Name
 Parameters:
   PublicKey:
     Description: "Your MongoDB Cloud Public API Key"
@@ -55,6 +58,10 @@ Parameters:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
     Default: "OrgId"
+  ProjectName:
+    Description: "The name of the project."
+    Type: String
+    Default: "aws-quickstart-vpc"
   ClusterName:
     Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
       its name cannot be changed.
@@ -125,6 +132,10 @@ Parameters:
     - "4.0"
     - "4.2"
     - "4.4"
+  DatabaseUserRoleDatabaseName:
+    Description: Database User Role Database Name
+    Type: String
+    Default: "test"
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC-ID of your existing Virtual Private Cloud (VPC) which you wish to peer to your new MongoDB Atlas cluster. This is the VPC that your application uses usually.
@@ -162,7 +173,7 @@ Resources:
       ApiKeys:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
-      Name: !Sub "${AWS::StackName}"
+      Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     DependsOn: AtlasProject
@@ -194,7 +205,7 @@ Resources:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
       ProjectId: !Ref "AtlasProject"
-      Name: !Sub "${AWS::StackName}"
+      Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ReplicationFactor: 3
       NumShards: 1
@@ -215,7 +226,7 @@ Resources:
       AWSIAMType: "ROLE"
       Roles:
       - RoleName: "readWrite"
-        DatabaseName: !Sub "${AWS::StackName}"
+        DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
       - Name: !Sub "${AWS::StackName}"
         Type: "CLUSTER"
