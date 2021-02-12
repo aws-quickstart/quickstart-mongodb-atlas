@@ -2,6 +2,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Parameters for deploying MongoDB Atlas with VPC peering to an existing VPC"
+    Order: "3"
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -23,7 +26,6 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
-      - AccessList
     - Label:
         default: AWS Quick Start Configuration
       Parameters:
