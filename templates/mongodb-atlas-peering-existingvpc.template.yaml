@@ -8,9 +8,9 @@ Metadata:
         default: Network Configuration
       Parameters:
       - VPC
-      - AccessList
+      - RouteTableCIDRBlock
     - Label:
-        default: Security Configuration
+        default: MongoDB Atlas ApiKey Configuration
       Parameters:
       - PublicKey
       - PrivateKey 
@@ -18,17 +18,43 @@ Metadata:
     - Label:
         default: MongoDB Atlas Configuration
       Parameters:
+      - RegisterMongoDBResources
       - ProjectName
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - AccessList
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
+      - QSS3BucketRegion
     ParameterLabels:
+      VPC:
+        default: AWS VPC to peer with
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      QSS3BucketRegion:
+        default: Quick Start S3 Bucket Region
+      RouteTableCIDRBlock:
+        default: CIDR block for app to use in VPC Peering, passed to network-peering resource
+      PublicKey:
+        default: MongoDB Atlas API PublicKey
+      PrivateKey:
+        default: MongoDB Atlas API PrivateKey
+      OrgId:
+        default: MongoDB Atlas API OrgId
+      RegisterMongoDBResources:
+        default: Y/M Deploy the MongoDB Atlas CloudFormation Resources
       ProjectName:
-        default: atlas-cfn-quickstart
+        default: Name of new Atlas Project
       ClusterName:
-        default: cluster-1
+        default: Name of new cluster
       ClusterRegion:
-        default: us-east-1
+        default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
 Parameters:
@@ -44,6 +70,10 @@ Parameters:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
     Default: "OrgId"
+  ProjectName:
+    Description: "The name of the project."
+    Type: String
+    Default: "aws-quickstart-vpc"
   ClusterName:
     Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
       its name cannot be changed.
@@ -166,7 +196,7 @@ Resources:
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-  AtlasPeeringStack:
+  Atlas:
     Metadata:
       PseudoDependsOn: !If
         - RegisterResources
@@ -181,6 +211,7 @@ Resources:
       Parameters:
         ClusterInstanceSize: !Ref ClusterInstanceSize
         ClusterMongoDBMajorVersion: !Ref ClusterMongoDBMajorVersion
+        ProjectName: !Ref ProjectName
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
@@ -191,26 +222,26 @@ Resources:
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM Role database cluster access"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasIAMRole"
+    Value: !GetAtt "Atlas.Outputs.AtlasIAMRole"
   AtlasDatabaseUser:
     Description: "Atlas database user, configured for AWS IAM Role access."
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasDatabaseUser"
+    Value: !GetAtt "Atlas.Outputs.AtlasDatabaseUser"
   AtlasProject:
     Description: "Info on your Atlas deployment"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasProject"
+    Value: !GetAtt "Atlas.Outputs.AtlasProject"
   AtlasProjectIPAccessList:
     Description: "Atlas project ip access list"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasProjectIPAccessList"
+    Value: !GetAtt "Atlas.Outputs.AtlasProjectIPAccessList"
   AtlasCluster:
     Description: "Info on your Atlas Cluster"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasCluster"
+    Value: !GetAtt "Atlas.Outputs.AtlasCluster"
   ClusterState:
     Description: "Cluster State"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.ClusterState"
+    Value: !GetAtt "Atlas.Outputs.ClusterState"
   ClusterSrvAddress:
     Description: "Hostname for mongodb+srv:// connection string"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.ClusterSrvAddress"
+    Value: !GetAtt "Atlas.Outputs.ClusterSrvAddress"
   AtlasNetworkPeering:
     Description: "Info on the network peering connection"
-    Value: !GetAtt "AtlasPeeringStack.Outputs.AtlasNetworkPeering"
+    Value: !GetAtt "Atlas.Outputs.AtlasNetworkPeering"
 

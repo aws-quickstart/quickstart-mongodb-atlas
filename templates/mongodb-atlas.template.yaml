@@ -5,12 +5,7 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: Network Configuration
-      Parameters:
-      - VPC
-      - AccessList
-    - Label:
-        default: Security Configuration
+        default: MongoDB Atlas ApiKey Configuration
       Parameters:
       - PublicKey
       - PrivateKey 
@@ -22,23 +17,26 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - AccessList
+      - DatabaseUserRoleDatabaseName
     ParameterLabels:
+      PublicKey:
+        default: MongoDB Atlas API PublicKey
+      PrivateKey:
+        default: MongoDB Atlas API PrivateKey
+      OrgId:
+        default: MongoDB Atlas API OrgId
       ProjectName:
-        default: atlas-cfn-quickstart
+        default: Name of new Atlas Project
       ClusterName:
-        default: cluster-1
+        default: Name of new cluster
       ClusterRegion:
-        default: us-east-1
+        default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
+      DatabaseUserRoleDatabaseName:
+        default: MongoDB Atlas Database User Role Database Name
 Parameters:
-  EnableSecretForApiKey:
-    AllowedValues:
-    - 'true'
-    - 'false'
-    Default: 'false'
-    Description: "Set to true to enable adding an AWS Secret for your MongoDB API Key"
-    Type: String
   PublicKey:
     Description: "Your MongoDB Cloud Public API Key"
     Type: String
@@ -51,6 +49,10 @@ Parameters:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
     Default: "OrgId"
+  ProjectName:
+    Description: "The name of the project."
+    Type: String
+    Default: "aws-quickstart"
   ClusterName:
     Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
       its name cannot be changed.
@@ -121,38 +123,16 @@ Parameters:
     - "4.0"
     - "4.2"
     - "4.4"
-  QSS3BucketName:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
-      (-).
-    Default: aws-quickstart
-    Description: S3 bucket name for the Quick Start assets. This string can include
-      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
-      or end with a hyphen (-).
+  DatabaseUserRoleDatabaseName:
+    Description: Database User Role Database Name
     Type: String
-  QSS3KeyPrefix:
-    AllowedPattern: ^[0-9a-zA-Z-/.]*$
-    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and forward slash (/).
-    Default: quickstart-mongodb-atlas/
-    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      forward slash (/).
-    Type: String
-  QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
-      hosted. When using your own bucket, you must specify this value.
-    Type: String
-Conditions:
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+    Default: "test"
 Resources:
   AtlasApiKeySecret:
     Type: 'AWS::SecretsManager::Secret'
     Properties:
       Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: This secret has a hardcoded password in SecretString, how can i make this optional?
+      Description: MongoDB Atlas API Key
       #
       # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
       #
@@ -178,7 +158,7 @@ Resources:
       ApiKeys:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
-      Name: !Sub "${AWS::StackName}"
+      Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     DependsOn: AtlasProject
@@ -198,7 +178,7 @@ Resources:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
       ProjectId: !Ref "AtlasProject"
-      Name: !Sub "${AWS::StackName}"
+      Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ReplicationFactor: 3
       NumShards: 1
@@ -219,7 +199,7 @@ Resources:
       AWSIAMType: "ROLE"
       Roles:
       - RoleName: "readWrite"
-        DatabaseName: !Sub "${AWS::StackName}"
+        DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
       - Name: !Sub "${AWS::StackName}"
         Type: "CLUSTER"
