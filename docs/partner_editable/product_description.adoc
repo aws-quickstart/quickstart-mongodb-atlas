@@ -6,8 +6,8 @@
 This Quick Start provisions complete MongoDB Atlas deployments through CloudFormation using official MongoDB Atlas AWS CloudFormation Resource Types.
 
 The templates/mongodbatlas-quickstart.template.yaml stack will provision a complete MongoDB Atlas deployment for you. This includes the follow resources:
-
-* AWS IAM role
+//TODO For the MongoDB resources in the list below, can we add a link that describes what they are? e.g. something like: "For details of the MongoDB resources, visit MongoDB Atlas documentation (link)"
+* AWS IAM role //TODO Can we expand upon this, what does the role do?
 * MongoDB Atlas project in a dedicated VPC
 * MongoDB Atlas cluster
 * MongoDB Atlas IP access list entry

@@ -1,5 +1,6 @@
 // There are generally two deployment options. If additional are required, add them here
 
+//TODO update this to inclue three deployment options
 This Quick Start provides two deployment options:
 
 * *Deploy {partner-product-short-name} (end-to-end deployment)*. This option builds a new complete MongoDB Atlas environment within AWS consisting of the a project, cluster, and more.

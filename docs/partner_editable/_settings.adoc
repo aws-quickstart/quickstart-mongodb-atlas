@@ -4,8 +4,8 @@
 :partner-company-name: MongoDB, Inc.
 :doc-month: December
 :doc-year: 2020
-:partner-contributors: Cloud Team - {partner-company-name}
-:quickstart-contributors: jason.mimick@mongodb.com
+:partner-contributors: Jason Mimick - {partner-company-name}
+:quickstart-contributors: Vinod Shukla, AWS Quick Start team
 :deployment_time: 10 minutes
 :default_deployment_region: us-east-1
 // Uncomment these two attributes if you are leveraging
@@ -13,3 +13,4 @@
 // Additional content will be auto-generated based on these attributes.
 // :marketplace_subscription:
 // :marketplace_listing_url: https://aws.amazon.com/marketplace/pp/MongoDB-MongoDB-Atlas-for-AWS/B077D557RX 
+:parameters_as_appendix:

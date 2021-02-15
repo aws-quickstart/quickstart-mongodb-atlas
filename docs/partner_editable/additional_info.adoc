@@ -3,6 +3,7 @@
 
 *TODO - NOT UPDATED YET*
 
+//TODO Add test and post deployment steps
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
 
