@@ -1,9 +1,4 @@
-// Replace the content in <>
-// Describe or link to specific knowledge requirements; for example: “familiarity with basic concepts in the areas of networking, database operations, and data encryption” or “familiarity with <software>.”
-
-This Quick Start assumes familiarity with MongoDB Atlas.
-
-The https://docs.atlas.mongodb.com/getting-started[Getting Started^] guides in the Atlas documentation are a great place to start.
+This Quick Start assumes familiarity with MongoDB Atlas. The https://docs.atlas.mongodb.com/getting-started[Getting Started^] guides in the Atlas documentation are a great place to start.
 
 
-
+This Quick Start uses the official {partner-product-short-name} AWS CloudFormation Resource Types. 

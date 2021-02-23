@@ -1,27 +1,56 @@
-// Add steps as necessary for accessing the software, post-configuration, and testing. Don’t include full usage instructions for your software, but add links to your product documentation for that information.
-//Should any sections not be applicable, remove them
-
-*TODO - NOT UPDATED YET*
-
-//TODO Add test and post deployment steps
 == Test the deployment
-// If steps are required to test the deployment, add them here. If not, remove the heading
 
-== Post deployment steps
-// If Post-deployment steps are required, add them here. If not, remove the heading
+You can test your new deployment in a number of ways.
+
+Once complete you will find you new deployment Project ID in the stack outputs. You can use this to open the MongoDB Atlas web console at ```http://cloud.mongodb.com/v2/<ProjectId>```.
+
+You can use the `mongo` shell. Please refer to https://docs.mongodb.com/manual/reference/program/mongo/index.html#connect-to-a-mongodb-atlas-cluster-using-aws-iam-credentials[connect via shell using AWS IAM^].
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any best practices for using the software._
+There are a number of considerations for production-grade deployments. While this Quick Start demonstrates some of these, such as DB user security and peering, please see the https://docs.atlas.mongodb.com/best-practices/[best practices^] documentation for the most recent and upto date information.
+
+Choosing the correct Atlas cluster tier and configuration is an important step in setting up a successful production MongoDB deployment. You can always modify a cluster at a later time, but getting started with the right configuration is possible with a few calculations based on your data set size and network requirements. See the https://docs.atlas.mongodb.com/production-considerations/[Atlas Production Considerations^] to learn more.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any security-related information._
+The Quick Start will provision a cluster with security an TLS enabled by default. Optionally, a Network Peering is also established to a new or existing AWS VPC. For more details, please refer to the https://docs.atlas.mongodb.com/setup-cluster-security/[Atlas cluster security^] documentation.
 
-*TODO* Document IAM and connecting
+If you are using Lambda, then ensure you are following the https://docs.atlas.mongodb.com/best-practices-connecting-to-aws-lambda/[best practices^] for connecting to AWS Lambda.
+
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-_Add any other details that will help the customer use the software on AWS._
+== MongoDB Atlas CloudFormation Resource Reference
+
+.MongoDB::Atlas::Project 
+- A logical grouping of clusters. You can have multiple clusters within a single project and multiple projects within a single organization. 
+- https://github.com/aws-quickstart/quickstart-mongodb-atlas-resources/tree/main/cfn-resources/project/docs[MongoDB::Atlas::Project^] Reference
+- https://docs.atlas.mongodb.com/reference/api/projects/[Atlas API^] Documentation
+
+.MongoDB::Atlas::Cluster
+- Set of nodes comprising a MongoDB deployment and database. In Atlas, clusters can be replica sets or sharded deployments.
+- https://github.com/aws-quickstart/quickstart-mongodb-atlas-resources/tree/main/cfn-resources/cluster/docs[MongoDB::Atlas::Cluster^] Reference
+- https://docs.atlas.mongodb.com/reference/api/clusters/[Atlas API^] Documentation
+
+.MongoDB::Atlas::DatabaseUser
+- Credentials used to authenticate a client to access a MongoDB database deployment. You can assign privileges to a database user to determine that user's access level to a cluster. Database users are different from Atlas users. Database users have access to MongoDB deployments, not the Atlas application.
+- https://github.com/aws-quickstart/quickstart-mongodb-atlas-resources/tree/main/cfn-resources/database-user/docs[MongoDB::Atlas::DatabaseUser^] Reference
+- https://docs.atlas.mongodb.com/reference/api/database-users/[Atlas API^] Documentation
+
+.MongoDB::Atlas::ProjectIPAccessList
+- Atlas only allows client connections to the cluster from entries in the project's IP
+access list. Each entry is either a single IP address or a CIDR 
+- https://github.com/aws-quickstart/quickstart-mongodb-atlas-resources/tree/main/cfn-resources/project-ip-access-list/docs[MongoDB::Atlas::DatabaseUser^] Reference
+- https://docs.atlas.mongodb.com/reference/api/access-lists/[Atlas API^] Docuementation
+
+.MongoDB::Atlas::NetworkPeering 
+- Process by which two Internet networks connect and exchange traffic. You can directly peer your VPC with the Atlas VPC created for your MongoDB clusters. Using network peering, your application servers can directly connect to Atlas while remaining isolated from public networks.
+- https://github.com/aws-quickstart/quickstart-mongodb-atlas-resources/tree/main/cfn-resources/network-peering/docs[MongoDB::Atlas::NetworkPeering^] Reference
+- https://docs.atlas.mongodb.com/reference/api/vpc/[Atlas API^] Documentation
+
+MongoDB https://docs.atlas.mongodb.com/mongodb-reference/[Reference^]
+
+
