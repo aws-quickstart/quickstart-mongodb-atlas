@@ -2,8 +2,13 @@
 :partner-product-name: MongoDB Atlas 
 :partner-product-short-name: MongoDB Atlas
 :partner-company-name: MongoDB, Inc.
+<<<<<<< HEAD
+:doc-month: March 
+:doc-year: 2021
+=======
 :doc-month: December
 :doc-year: 2020
+>>>>>>> ae56e9dde820cc7c30fdc8407098bbcfc324a2ca
 :partner-contributors: Jason Mimick - {partner-company-name}
 :quickstart-contributors: Vinod Shukla, AWS Quick Start team
 :deployment_time: 10 minutes
@@ -13,4 +18,8 @@
 // Additional content will be auto-generated based on these attributes.
 // :marketplace_subscription:
 // :marketplace_listing_url: https://aws.amazon.com/marketplace/pp/MongoDB-MongoDB-Atlas-for-AWS/B077D557RX 
+<<<<<<< HEAD
 :parameters_as_appendix:
+=======
+:parameters_as_appendix:
+>>>>>>> ae56e9dde820cc7c30fdc8407098bbcfc324a2ca

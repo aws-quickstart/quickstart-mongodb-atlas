@@ -15,12 +15,16 @@ For additional information, see https://docs.aws.amazon.com/AWSCloudFormation/la
 
 *A.* We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information about AWS CloudFormation quotas, see the http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS documentation^].
 
-//TODO Add FAQ about RegisterMongoDBResources parameter
+*Q.* Do I need to run the RegisterMongoDBResource step each time?
+
+*A.* You only need to run this step once per region.
+
+*Q.* What does the RegisterMongoDBResource step do?
+
+*A.* This steps registers each of the MongoDB Atlas CloudFormation Resource Types. This is a standard requirement from CloudFormation. Please refer to the https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html[AWS Custom Resource^] documentation.
 
 == Troubleshooting
 
-<Steps for troubleshooting the deployment go here.>
+Errors can typlically be resolved by inspecting the CloudFormation event logs or the CloudWatch logs created by the MongoDB Atlas CloudFormation Resources.
 
-//TODO Add any documentation links here
-//[[additional-resources]]
-//== Additional Resources
+If a stack fails to deploy, check the Events tab. If the error occurs for one of the MongoDB Atlas resources, say for example MongoDB::Atlas::Cluster, then you will find a corresponding AWS CloudWatch Log Group called "mongodb-atlas-cluster-logs". Find this group and check the latest log stream entry to find the cause of the issue.
