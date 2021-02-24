@@ -1,3 +1,6 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: MongoDB Atlas CloudFormation resources. (qs-1rkorhegh)
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:

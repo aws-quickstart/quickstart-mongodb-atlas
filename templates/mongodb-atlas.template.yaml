@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart
+Description: MongoDB Atlas AWS CloudFormation Quickstart. (qs-1rkorhec7)
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
