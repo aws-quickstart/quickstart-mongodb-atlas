@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering
+Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering. (qs-1rkorheg3)
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying MongoDB Atlas with VPC peering to a new VPC"
@@ -61,7 +61,7 @@ Metadata:
       QSS3BucketRegion:
         default: Quick Start S3 Bucket Region
       RouteTableCIDRBlock:
-        default: CIDR block for app to use in VPC Peering, passed to network-peering resource
+        default: VPC peering CIDR block
       PublicKey:
         default: MongoDB Atlas API PublicKey
       PrivateKey:
@@ -69,7 +69,7 @@ Metadata:
       OrgId:
         default: MongoDB Atlas API OrgId
       RegisterMongoDBResources:
-        default: Y/M Deploy the MongoDB Atlas CloudFormation Resources
+        default: Register MongoDB Atlas CloudFormation resources
       ProjectName:
         default: Name of new Atlas Project
       ClusterName:

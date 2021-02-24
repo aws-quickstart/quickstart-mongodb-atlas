@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart
+Description: MongoDB Atlas AWS CloudFormation Quickstart. (qs-1rkorhef6)
 Metadata:
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying MongoDB Atlas without VPC peering"
@@ -35,7 +35,7 @@ Metadata:
       OrgId:
         default: MongoDB Atlas API OrgId
       RegisterMongoDBResources:
-        default: Y/M Deploy the MongoDB Atlas CloudFormation Resources
+        default: Register MongoDB Atlas CloudFormation resources
       ProjectName:
         default: Name of new Atlas Project
       ClusterName:
@@ -44,6 +44,12 @@ Metadata:
         default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      QSS3BucketRegion:
+        default: Quick Start S3 Bucket Region
 Parameters:
   PublicKey:
     Description: "Your MongoDB Cloud Public API Key"

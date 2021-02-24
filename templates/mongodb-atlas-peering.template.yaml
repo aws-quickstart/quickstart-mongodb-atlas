@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering
+Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering. (qs-1rkorhefe)
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
