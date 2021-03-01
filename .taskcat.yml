@@ -21,7 +21,7 @@ tests:
     template: templates/mongodb-atlas-main.template.yaml
   mdb-atlas-vpc:
     regions:
-    - us-east-2
+    - us-west-2
     parameters:
       PublicKey: override
       PrivateKey: override
