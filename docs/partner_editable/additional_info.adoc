@@ -2,7 +2,7 @@
 
 You can test your new deployment in a number of ways.
 
-Once complete you will find you new deployment Project ID in the stack outputs. You can use this to open the MongoDB Atlas web console at ```http://cloud.mongodb.com/v2/<ProjectId>```.
+Once complete you will find you new deployment Project ID in the stack outputs. You can use this to open the MongoDB Atlas web console at `\http://cloud.mongodb.com/v2/<ProjectId>`.
 
 You can use the `mongo` shell. Please refer to https://docs.mongodb.com/manual/reference/program/mongo/index.html#connect-to-a-mongodb-atlas-cluster-using-aws-iam-credentials[connect via shell using AWS IAM^].
 
@@ -23,7 +23,7 @@ If you are using Lambda, then ensure you are following the https://docs.atlas.mo
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-== MongoDB Atlas CloudFormation Resource Reference
+=== MongoDB Atlas CloudFormation Resource Reference
 
 .MongoDB::Atlas::Project 
 - A logical grouping of clusters. You can have multiple clusters within a single project and multiple projects within a single organization. 

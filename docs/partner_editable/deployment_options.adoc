@@ -2,9 +2,9 @@ This Quick Start provides multiple deployment options:
 
 * *Deploy {partner-product-short-name} (end-to-end deployment)*. This option builds a new complete MongoDB Atlas environment within AWS consisting of the a project, cluster, and more.
 
-* *Deploy {partner-product-short-name} into a new VPC*. This option peers {partner-product-short-name} with a brand new AWS Virtual Private Cloud.
+* *Deploy {partner-product-short-name} into a new VPC*. This option peers {partner-product-short-name} with a new VPC.
 
-* *Deploy {partner-product-short-name} into an existing VPC*. This option peers {partner-product-short-name} in your existing AWS infrastructure.
+* *Deploy {partner-product-short-name} into an existing VPC*. This option peers {partner-product-short-name} with your existing VPC.
 
 Each option also provisions an AWS IAM Role and corresponding MongoDB Database User to use for secure connections to your MongoDB Atlas Cluster.
 

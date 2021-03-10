@@ -1,6 +1,6 @@
 ==== Prepare your AWS account
 
-This quickstart uses the MongoDB Atlas CloudFormation Resource Types and automatically registers in the AWS region you wish to launch the quickstart. Once run, you can safely skip this step on additional deployments in each region by setting the ```RegisterMongoDBResources``` parameter to **No**.
+This quick start uses the MongoDB Atlas CloudFormation Resource Types and automatically registers in the AWS region you wish to launch the quick start. Once run, you can safely skip this step on additional deployments in each region by setting the ```RegisterMongoDBResources``` parameter to **No**.
 
 ==== Prepare your {partner-company-name} account
 
