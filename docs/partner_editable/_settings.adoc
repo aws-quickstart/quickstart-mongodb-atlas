@@ -1,10 +1,10 @@
 :quickstart-project-name: quickstart-mongodb-atlas
 :partner-product-name: MongoDB Atlas 
 :partner-product-short-name: MongoDB Atlas
-:partner-company-name: MongoDB, Inc.
+:partner-company-name: MongoDB Inc.
 :doc-month: March 
 :doc-year: 2021
-:partner-contributors: Jason Mimick - {partner-company-name}
+:partner-contributors: Jason Mimick, {partner-company-name}
 :quickstart-contributors: Vinod Shukla, AWS Quick Start team
 :deployment_time: 10 minutes
 :default_deployment_region: us-east-1
