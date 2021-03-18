@@ -28,11 +28,14 @@ NOTE: You are responsible for the cost of the AWS services used while running th
 
 [cols=2*]
 |===
-^|http://qs_launch_link[Deploy {partner-product-short-name} on AWS^]
-^|http://qs_template_link[View template^]
+^|http://qs_launch_link[Deploy {partner-product-short-name} on AWS without VPC peering^]
+^|https://github.com/aws-quickstart/quickstart-mongodb-atlas/blob/main/templates/mongodb-atlas-main.template.yaml[View template^]
 
 ^|http://qs_launch_link[Deploy {partner-product-short-name} and peer with an existing VPC on AWS^]
-^|http://qs_template_link[View template^]
+^|https://github.com/aws-quickstart/quickstart-mongodb-atlas/blob/main/templates/mongodb-atlas-peering-existingvpc.template.yaml[View template^]
+
+^|http://qs_launch_link[Deploy {partner-product-short-name} and peer with a new VPC on AWS^]
+^|https://github.com/aws-quickstart/quickstart-mongodb-atlas/blob/main/templates/mongodb-atlas-peering-newvpc.template.yaml[View template^]
 |===
 
 Each deployment takes about {deployment_time} to complete.
