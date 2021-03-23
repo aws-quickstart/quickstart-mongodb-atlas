@@ -1,6 +1,2 @@
-This Quick Start supports the following Regions:
+MongoDB Atlas is available across most AWS Regions. For more information, see https://docs.atlas.mongodb.com/reference/amazon-aws[Amazon Web Services (AWS)^].
 
-* us-east-1, US East (N. Virginia) (EXAMPLE)
-* us-east-2, US East (Ohio) (EXAMPLE)
-
-//Full list: https://docs.aws.amazon.com/general/latest/gr/rande.html
