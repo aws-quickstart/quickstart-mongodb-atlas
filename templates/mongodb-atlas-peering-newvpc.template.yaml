@@ -289,9 +289,6 @@ Outputs:
   AtlasProject:
     Description: "Information about your Atlas deployment."
     Value: !GetAtt "Atlas.Outputs.AtlasProject"
-  AtlasProjectIPAccessList:
-    Description: "IP access list for your Atlas project."
-    Value: !GetAtt "Atlas.Outputs.AtlasProjectIPAccessList"
   AtlasCluster:
     Description: "Information about your Atlas cluster."
     Value: !GetAtt "Atlas.Outputs.AtlasCluster"
