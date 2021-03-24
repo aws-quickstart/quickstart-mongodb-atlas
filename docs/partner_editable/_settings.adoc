@@ -6,7 +6,7 @@
 :doc-year: 2021
 :partner-contributors: Jason Mimick, {partner-company-name}
 :quickstart-contributors: Vinod Shukla, AWS Quick Start team
-:deployment_time: 10 minutes
+:deployment_time: 10–20 minutes
 :default_deployment_region: us-east-1
 // Uncomment these two attributes if you are leveraging
 // - an AWS Marketplace listing.
