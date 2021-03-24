@@ -1,10 +1,4 @@
-This Quick Start provides three deployment options: 
-
-. Atlas deployment and peering in a new AWS VPC
-. Atlas deployment and peering in an existing AWS VPC
-. Atlas deployment without peering
-
-Deploying this Quick Start for a new virtual private cloud (VPC) with
+Deploying this Quick Start with peering for a new virtual private cloud (VPC) with
 default parameters builds the following _{partner-product-short-name}_ environment in the
 AWS Cloud.
 
@@ -16,16 +10,14 @@ image::../images/simple-quickstart-arch.png[Architecture,width=648,height=439]
 
 As shown in Figure 1, the Quick Start sets up the following:
 
-* A VPC configured with public and private subnets, according to AWS
-best practices, to provide you with your own virtual network on AWS.*
-* A highly available architecture for MongoDB Atlas cluster that spans at least three Availability Zones.
-* In the public subnets, managed network address translation (NAT) gateways to allow outbound
-internet access for resources in the private subnets.*
-* MongoDB Atlas project, database user, cluster, and project IP access list using MongoDB CloudFormation resource types.
-* VPC peering between your VPC and the Atlas deployment.
+* A virtual private cloud (VPC) that spans two Availability Zones. The VPC is configured with public subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
+* In the public subnets, managed network address translation (NAT) gateways to allow outbound internet access.*
+* A VPC peering connection between your VPC and the MongoDB Atlas VPC.
+* A VPC for the MongoDB Atlas cluster that spans at least three Availability Zones.
+* A MongoDB Atlas cluster that contains the MongoDB Atlas project. The cluster uses MongoDB CloudFormation resource for the database user, cluster, and project-IP access list.
 
 *The template that deploys the Quick Start into an existing VPC skips
 the components marked by asterisks and prompts you for your existing VPC
 configuration.
 
-Deploying Atlas without peering is the simplest deployment option. It skips the creation of any VPC resources and creates only MongoDB Atlas resources using MongoDB CloudFormation resource types.
+Deploying Atlas without peering is the simplest deployment option. It skips the VPC resources and creates only MongoDB Atlas resources using MongoDB CloudFormation resource types.
