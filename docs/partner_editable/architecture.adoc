@@ -6,7 +6,7 @@ AWS Cloud.
 [#architecture1]
 .Quick Start architecture for _{partner-product-short-name}_
 [link=images/simple-quickstart-arch.png]
-image::../images/simple-quickstart-arch.png[Architecture,width=648,height=439]
+image::../images/simple-quickstart-arch.png[Architecture]
 
 As shown in Figure 1, the Quick Start sets up the following:
 
