@@ -8,7 +8,7 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: Network configuration.
+        default: Network configuration
       Parameters:
       - AvailabilityZones
       - VPCCIDR
@@ -18,13 +18,13 @@ Metadata:
       - PublicSubnet2CIDR
       - RouteTableCIDRBlock
     - Label:
-        default: MongoDB Atlas API key configuration.
+        default: MongoDB Atlas API key configuration
       Parameters:
       - PublicKey
       - PrivateKey 
       - OrgId
     - Label:
-        default: MongoDB Atlas configuration.
+        default: MongoDB Atlas configuration
       Parameters:
       - RegisterMongoDBResources
       - ProjectName
@@ -32,52 +32,52 @@ Metadata:
       - ClusterRegion
       - ClusterInstanceSize
     - Label:
-        default: AWS Quick Start configuration.
+        default: AWS Quick Start configuration
       Parameters:
       - QSS3BucketName
       - QSS3KeyPrefix
       - QSS3BucketRegion
     ParameterLabels:
       AvailabilityZones:
-        default: Availability Zones.
+        default: Availability Zones
       VPCCIDR:
         default: VPC CIDR.
       PrivateSubnet1CIDR:
-        default: Private subnet 1 CIDR.
+        default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
-        default: Private subnet 2 CIDR.
+        default: Private subnet 2 CIDR
       PrivateSubnet3CIDR:
-        default: Private subnet 3 CIDR.
+        default: Private subnet 3 CIDR
       PublicSubnet1CIDR:
-        default: Public subnet 1 CIDR.
+        default: Public subnet 1 CIDR
       PublicSubnet2CIDR:
-        default: Public subnet 2 CIDR.
+        default: Public subnet 2 CIDR
       PublicSubnet3CIDR:
-        default: Public subnet 3 CIDR.
+        default: Public subnet 3 CIDR
       QSS3BucketName:
-        default: Quick Start S3 bucket name.
+        default: Quick Start S3 bucket name
       QSS3KeyPrefix:
-        default: Quick Start S3 key prefix.
+        default: Quick Start S3 key prefix
       QSS3BucketRegion:
-        default: Quick Start S3 bucket Region.
+        default: Quick Start S3 bucket Region
       RouteTableCIDRBlock:
-        default: VPC peering CIDR block.
+        default: VPC peering CIDR block
       PublicKey:
-        default: MongoDB Atlas API public key.
+        default: MongoDB Atlas API public key
       PrivateKey:
-        default: MongoDB Atlas API private key.
+        default: MongoDB Atlas API private key
       OrgId:
         default: MongoDB Atlas API organization ID
       RegisterMongoDBResources:
-        default: Register MongoDB Atlas CloudFormation resources.
+        default: Register MongoDB Atlas CloudFormation resources
       ProjectName:
-        default: Name of new Atlas project.
+        default: Name of new Atlas project
       ClusterName:
-        default: Name of new cluster.
+        default: Name of new cluster
       ClusterRegion:
-        default: AWS Region for Atlas cluster.
+        default: AWS Region for Atlas cluster
       ClusterInstanceSize:
-        default: MongoDB Atlas instance size.
+        default: MongoDB Atlas instance size
 Parameters:
   AvailabilityZones:
     Description: List of Availability Zones to use for the VPC subnets.

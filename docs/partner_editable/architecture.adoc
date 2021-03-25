@@ -1,4 +1,4 @@
-Deploying this Quick Start with peering for a new virtual private cloud (VPC) with
+Deploying this Quick Start with peering for a new VPC with
 default parameters builds the following _{partner-product-short-name}_ environment in the
 AWS Cloud.
 
@@ -6,15 +6,14 @@ AWS Cloud.
 [#architecture1]
 .Quick Start architecture for _{partner-product-short-name}_
 [link=images/simple-quickstart-arch.png]
-image::../images/simple-quickstart-arch.png[Architecture,width=648,height=439]
+image::../images/simple-quickstart-arch.png[Architecture]
 
 As shown in Figure 1, the Quick Start sets up the following:
 
-* A virtual private cloud (VPC) that spans two Availability Zones. The VPC is configured with public subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
+* A VPC that spans two Availability Zones. The VPC is configured with public subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets, managed network address translation (NAT) gateways to allow outbound internet access.*
 * A VPC peering connection between your VPC and the MongoDB Atlas VPC.
-* A VPC for the MongoDB Atlas cluster that spans at least three Availability Zones.
-* A MongoDB Atlas cluster that contains the MongoDB Atlas project. The cluster uses MongoDB CloudFormation resource for the database user, cluster, and project-IP access list.
+* A VPC for the MongoDB Atlas project that spans at least three Availability Zones. This includes a fully managed MongoDB Atlas cluster, a database user, and an IP access list entry.
 
 *The template that deploys the Quick Start into an existing VPC skips
 the components marked by asterisks and prompts you for your existing VPC

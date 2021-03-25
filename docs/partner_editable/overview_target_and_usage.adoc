@@ -10,7 +10,7 @@ This Quick Start is for developers and DevOps professionals who want to create f
 By default, every {partner-product-short-name} cluster includes the following:
 
 * Support for the latest MongoDB enterprise database versions
-* A minimum three-node replica set for high availability, deployed in a new virtual private cloud (VPC)
+* A three-node (minimally) replica set for high availability, deployed into a new VPC
 * Built-in security defaults, including always-on authentication and end-to-end encryption
 * Fully managed database lifecycle with automated patches, backups, and monitoring
 * Performance optimization features such as automatic scaling, index suggestions, and intelligent data tiering

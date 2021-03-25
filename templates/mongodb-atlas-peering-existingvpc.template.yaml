@@ -8,18 +8,18 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: Network configuration.
+        default: Network configuration
       Parameters:
       - VPC
       - RouteTableCIDRBlock
     - Label:
-        default: MongoDB Atlas API key configuration.
+        default: MongoDB Atlas API key configuration
       Parameters:
       - PublicKey
       - PrivateKey 
       - OrgId
     - Label:
-        default: MongoDB Atlas configuration.
+        default: MongoDB Atlas configuration
       Parameters:
       - RegisterMongoDBResources
       - ProjectName
@@ -27,38 +27,38 @@ Metadata:
       - ClusterRegion
       - ClusterInstanceSize
     - Label:
-        default: AWS Quick Start configuration.
+        default: AWS Quick Start configuration
       Parameters:
       - QSS3BucketName
       - QSS3KeyPrefix
       - QSS3BucketRegion
     ParameterLabels:
       VPC:
-        default: AWS VPC to peer with.
+        default: AWS VPC to peer with
       QSS3BucketName:
-        default: Quick Start S3 bucket name.
+        default: Quick Start S3 bucket name
       QSS3KeyPrefix:
-        default: Quick Start S3 key prefix.
+        default: Quick Start S3 key prefix
       QSS3BucketRegion:
-        default: Quick Start S3 bucket Region.
+        default: Quick Start S3 bucket Region
       RouteTableCIDRBlock:
-        default: VPC peering CIDR block.
+        default: VPC peering CIDR block
       PublicKey:
-        default: MongoDB Atlas API public key.
+        default: MongoDB Atlas API public key
       PrivateKey:
-        default: MongoDB Atlas API private key.
+        default: MongoDB Atlas API private key
       OrgId:
-        default: MongoDB Atlas API organization ID.
+        default: MongoDB Atlas API organization ID
       RegisterMongoDBResources:
-        default: Register MongoDB Atlas CloudFormation resources.
+        default: Register MongoDB Atlas CloudFormation resources
       ProjectName:
-        default: Name of new Atlas project.
+        default: Name of new Atlas project
       ClusterName:
-        default: Name of new cluster.
+        default: Name of new cluster
       ClusterRegion:
-        default: AWS Region for Atlas cluster.
+        default: AWS Region for Atlas cluster
       ClusterInstanceSize:
-        default: MongoDB Atlas instance size.
+        default: MongoDB Atlas instance size
 Parameters:
   PublicKey:
     Description: "MongoDB cloud public API key."
