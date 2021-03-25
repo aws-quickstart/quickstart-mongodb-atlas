@@ -25,7 +25,7 @@ endif::marketplace_subscription[]
 NOTE: You are responsible for the cost of the AWS services used while running this Quick Start reference deployment. There is no additional cost for using this Quick Start. For full details, see the pricing pages for each AWS service used by this Quick Start. Prices are subject to change.
 
 . Sign in to your AWS account, and choose one of the following options to launch the AWS CloudFormation template. For help with choosing an option, see link:#_deployment_options[deployment options] earlier in this guide.
-
++
 [cols=2*]
 |===
 ^|https://fwd.aws/jQ46Q[Deploy {partner-product-short-name} without VPC peering^]
@@ -37,14 +37,10 @@ NOTE: You are responsible for the cost of the AWS services used while running th
 ^|https://fwd.aws/vBj75[Deploy {partner-product-short-name} with VPC peering into an existing VPC^]
 ^|https://fwd.aws/w9Wrw[View template^]
 |===
-
++
 Each deployment takes about {deployment_time} to complete.
-
-[start=2]
++
 . Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the CloudFormation resource types for {partner-product-short-name} are built and deployed. The template is launched in the {default_deployment_region} Region by default. Note that resource types must be currently registered within each Region you use.
-
-
-[start=3]
 . On the *Create stack* page, keep the default setting for the template URL, and then choose *Next*.
 . On the *Specify stack details* page, change the stack name if needed. Review the parameters for the template. Provide values for the parameters that require input. For all other parameters, review the default settings, and customize them as necessary.
 
