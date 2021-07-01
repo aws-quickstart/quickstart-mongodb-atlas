@@ -2,6 +2,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: MongoDB Atlas AWS CloudFormation Quickstart. (qs-1rkorhec7)
 Metadata:
+  cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006, E3001, E1010 ] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -17,7 +18,6 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
-      - AccessList
       - DatabaseUserRoleDatabaseName
     ParameterLabels:
       PublicKey:
@@ -161,7 +161,6 @@ Resources:
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
-    DependsOn: AtlasProject
     Properties:
       ProjectId: !Ref "AtlasProject"
       ApiKeys:
@@ -172,7 +171,6 @@ Resources:
         Comment: "Testing open all ips"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
-    DependsOn: AtlasProject
     Properties:
       ApiKeys:
         PublicKey:  !Ref "PublicKey"
@@ -188,7 +186,6 @@ Resources:
         RegionName: !Ref "ClusterRegion"
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
-    DependsOn: AtlasCluster
     Properties:
       ProjectId: !Ref "AtlasProject"
       ApiKeys:

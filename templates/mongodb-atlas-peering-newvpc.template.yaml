@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: "MongoDB Atlas AWS CloudFormation Quick Start with VPC peering (qs-1rkorheg3)."
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W9006 # temporary to get rid of warnings
   QuickStartDocumentation:
     EntrypointName: Parameters for deploying MongoDB Atlas with VPC peering into a new VPC.
     Order: "2"
@@ -28,6 +32,7 @@ Metadata:
       Parameters:
       - RegisterMongoDBResources
       - ProjectName
+      - ClusterMongoDBMajorVersion
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
@@ -46,14 +51,10 @@ Metadata:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
         default: Private subnet 2 CIDR
-      PrivateSubnet3CIDR:
-        default: Private subnet 3 CIDR
       PublicSubnet1CIDR:
         default: Public subnet 1 CIDR
       PublicSubnet2CIDR:
         default: Public subnet 2 CIDR
-      PublicSubnet3CIDR:
-        default: Public subnet 3 CIDR
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
@@ -72,6 +73,8 @@ Metadata:
         default: Register MongoDB Atlas CloudFormation resources
       ProjectName:
         default: Name of new Atlas project
+      ClusterMongoDBMajorVersion:
+        default: MongoDB version
       ClusterName:
         default: Name of new cluster
       ClusterRegion:
@@ -234,7 +237,6 @@ Parameters:
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-  RegisterResources: !Equals [!Ref RegisterMongoDBResources, 'Yes']
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
@@ -257,7 +259,6 @@ Resources:
         VPCCIDR: !Ref VPCCIDR
   Atlas:
     Type: AWS::CloudFormation::Stack
-    DependsOn: VPCStack
     Properties:
       TemplateURL: !Sub
         - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-atlas-peering-existingvpc.template.yaml'
