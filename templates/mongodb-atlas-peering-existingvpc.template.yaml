@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: "MongoDB Atlas AWS CloudFormation Quick Start with VPC peering (qs-1rkorhefm)."
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W9006 # temporary to get rid of warnings
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying MongoDB Atlas with VPC peering into an existing VPC."
     Order: "3"
@@ -23,6 +27,7 @@ Metadata:
       Parameters:
       - RegisterMongoDBResources
       - ProjectName
+      - ClusterMongoDBMajorVersion
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
@@ -53,6 +58,8 @@ Metadata:
         default: Register MongoDB Atlas CloudFormation resources
       ProjectName:
         default: Name of new Atlas project
+      ClusterMongoDBMajorVersion:
+        default: MongoDB version
       ClusterName:
         default: Name of new cluster
       ClusterRegion:

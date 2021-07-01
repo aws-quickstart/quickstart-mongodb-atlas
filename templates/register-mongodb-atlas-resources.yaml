@@ -2,37 +2,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: MongoDB Atlas CloudFormation resources. (qs-1rkorhegh)
 Metadata:
+  cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006 ] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
-      - Label:
-          default: DNS Configuration
-        Parameters:
-          - DomainName
-          - SubDomainPrefix
-          - HostedZoneID
-          - Route53HostedSubdomainZone
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
           - QSS3BucketName
           - QSS3KeyPrefix
-      - Label:
-          default: OpenShift Configuration
-        Parameters:
-          - RegistryBucket
     ParameterLabels:
-      RegistryBucket:
-        default: Registry Bucket
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
       QSS3KeyPrefix:
         default: Quick Start S3 Key Prefix
-      HostedZoneID:
-        default: Route 53 Hosted Zone ID
-      SubDomainPrefix:
-        default: Subdomain Prefix
-      Route53HostedSubdomainZone:
-        default: Route 53 Subdomain Zone
 Parameters:
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
@@ -77,20 +59,36 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
+                Action: ["cloudformation:TagResource", "cloudformation:DescribeTypeRegistration", "cloudformation:UpdateTerminationProtection", "cloudformation:DescribeStackInstance", "cloudformation:DescribeStackResourceDrifts", "cloudformation:DetectStackResourceDrift", "cloudformation:DeleteChangeSet", "cloudformation:ListStackResources", "cloudformation:ContinueUpdateRollback", "cloudformation:UpdateStackSet", "cloudformation:ListStackSetOperations", "cloudformation:DescribeStackEvents", "cloudformation:RegisterType", "cloudformation:ListExports", "cloudformation:DescribeStackSetOperation", "cloudformation:GetStackPolicy", "cloudformation:ListStackSetOperationResults", "cloudformation:SetStackPolicy", "cloudformation:ListChangeSets", "cloudformation:ValidateTemplate", "cloudformation:DescribeStackSet", "cloudformation:DeleteStackSet", "cloudformation:DetectStackSetDrift", "cloudformation:ListTypes", "cloudformation:DetectStackDrift", "cloudformation:UpdateStack", "cloudformation:UpdateStackInstances", "cloudformation:ListImports", "cloudformation:ExecuteChangeSet", "cloudformation:DeregisterType", "cloudformation:ListTypeVersions", "cloudformation:SetTypeDefaultVersion", "cloudformation:DescribeStacks", "cloudformation:CreateChangeSet", "cloudformation:ListTypeRegistrations", "cloudformation:DescribeType", "cloudformation:DescribeStackResources", "cloudformation:CancelUpdateStack", "cloudformation:GetTemplate", "cloudformation:ListStackInstances", "cloudformation:DescribeStackDriftDetectionStatus", "cloudformation:DescribeChangeSet", "cloudformation:RecordHandlerProgress", "cloudformation:SignalResource", "cloudformation:ListStackSets", "cloudformation:GetTemplateSummary", "cloudformation:ListStacks", "cloudformation:CreateStackInstances", "cloudformation:UntagResource", "cloudformation:DeleteStack", "cloudformation:DeleteStackInstances", "cloudformation:CreateStack", "cloudformation:DescribeAccountLimits", "cloudformation:StopStackSetOperation", "cloudformation:CreateStackSet", "cloudformation:CreateUploadBucket", "cloudformation:EstimateTemplateCost", "cloudformation:DescribeStackResource"]
+                Resource: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*
+              - Effect: Allow
                 Action:
-                  - "cloudformation:*"
                   - "iam:PassRole"
                   - "iam:CreateRole"
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/*
+              - Effect: Allow
+                Action:
                   - "iam:CreatePolicy"
                   - "iam:ListPolicyVersions"
                   - "iam:DeletePolicyVersion"
                   - "iam:CreatePolicyVersion"
                   - "iam:AttachRolePolicy"
+                Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/*
+              - Effect: Allow
+                Action:
                   - "ssm:GetParameter"
                   - "ssm:PutParameter"
+                Resource: !Sub arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*
+              - Effect: Allow
+                Action:
                   - "sts:GetCallerIdentity"
-                  - "s3:GetObject"
                 Resource: "*"
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub 'arn:${AWS::Partition}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
+                  - !Sub 'arn:${AWS::Partition}:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
   ArtifactCopyPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -133,7 +131,7 @@ Resources:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Path: /
       Policies:
         - PolicyName: lambda-copier
@@ -144,13 +142,13 @@ Resources:
                 Action:
                   - s3:GetObject
                 Resource:
-                  - !Sub 'arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
+                  - !Sub 'arn:${AWS::Partition}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
               - Effect: Allow
                 Action:
                   - s3:PutObject
                   - s3:DeleteObject
                 Resource:
-                  - !Sub 'arn:aws:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
+                  - !Sub 'arn:${AWS::Partition}:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
 
   CustomResourceLogDeliveryRole:
     Type: AWS::IAM::Role
@@ -177,10 +175,12 @@ Resources:
                   - "logs:DescribeLogGroups"
                   - "logs:DescribeLogStreams"
                   - "logs:PutLogEvents"
+                Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
+              - Effect: Allow
+                Action:
                   - "cloudwatch:ListMetrics"
                   - "cloudwatch:PutMetricData"
                 Resource: "*"
-
   MongoDBCustomResourceExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -232,7 +232,7 @@ Resources:
                 - "secretsmanager:ListSecrets"
                 - "secretsmanager:PutSecretValue"
                 - "secretsmanager:TagResource"
-                Resource: "*"
+                Resource: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:*
 
   CopyZipsFunction:
     Type: AWS::Lambda::Function
@@ -394,7 +394,6 @@ Resources:
                   cfnresponse.send(event, context, status, {}, physicalResourceId=physical_id)
 
   RegisterProjectType:
-    DependsOn: RegisterTypeFunction
     Type: "AWS::CloudFormation::CustomResource"
     Properties:
       ServiceToken: !GetAtt RegisterTypeFunction.Arn
@@ -403,7 +402,6 @@ Resources:
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
 
   RegisterClusterType:
-    DependsOn: RegisterTypeFunction
     Type: "AWS::CloudFormation::CustomResource"
     Properties:
       ServiceToken: !GetAtt RegisterTypeFunction.Arn
@@ -412,7 +410,6 @@ Resources:
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceClusterExecutionRole.Arn
 
   RegisterDatabaseUserType:
-    DependsOn: RegisterTypeFunction
     Type: "AWS::CloudFormation::CustomResource"
     Properties:
       ServiceToken: !GetAtt RegisterTypeFunction.Arn
@@ -422,7 +419,6 @@ Resources:
 
 
   RegisterNetworkPeeringType:
-    DependsOn: RegisterTypeFunction
     Type: "AWS::CloudFormation::CustomResource"
     Properties:
       ServiceToken: !GetAtt RegisterTypeFunction.Arn
@@ -432,7 +428,6 @@ Resources:
 
 
   RegisterProjectIpAccessListType:
-    DependsOn: RegisterTypeFunction
     Type: "AWS::CloudFormation::CustomResource"
     Properties:
       ServiceToken: !GetAtt RegisterTypeFunction.Arn

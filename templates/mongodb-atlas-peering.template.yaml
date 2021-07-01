@@ -2,6 +2,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering. (qs-1rkorhefe)
 Metadata:
+  cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006, E3001, E1010 ] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -22,7 +23,6 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
-      - AccessList
       - DatabaseUserRoleDatabaseName
     ParameterLabels:
       VPC:
@@ -176,7 +176,6 @@ Resources:
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
-    DependsOn: AtlasProject
     Properties:
       ProjectId: !Ref "AtlasProject"
       ApiKeys:
@@ -187,7 +186,6 @@ Resources:
         Comment: "Testing open all ips"
   AtlasNetworkPeering:  
     Type: MongoDB::Atlas::NetworkPeering
-    DependsOn: AtlasProject
     Properties:
       ProjectId: !Ref "AtlasProject"
       ApiKeys:
@@ -199,7 +197,6 @@ Resources:
       VpcId: !Ref "VPC"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
-    DependsOn: AtlasProject
     Properties:
       ApiKeys:
         PublicKey:  !Ref "PublicKey"
