@@ -41,6 +41,16 @@ Resources:
     Properties:
       Tags: []
   RegisterTypeRole:
+    Metadata:
+      cfn-lint: {
+        config: {
+          ignore_checks: [ EIAMPolicyWildcardResource, EIAMPolicyActionWildcard ],
+          ignore_reasons: [
+              EIAMPolicyWildcardResource: "This function requires full access to CloudFormation",
+              EIAMPolicyActionWildcard: "This function requires full access to CloudFormation"
+          ]
+        }
+      }
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -59,8 +69,8 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
-                Action: ["cloudformation:TagResource", "cloudformation:DescribeTypeRegistration", "cloudformation:UpdateTerminationProtection", "cloudformation:DescribeStackInstance", "cloudformation:DescribeStackResourceDrifts", "cloudformation:DetectStackResourceDrift", "cloudformation:DeleteChangeSet", "cloudformation:ListStackResources", "cloudformation:ContinueUpdateRollback", "cloudformation:UpdateStackSet", "cloudformation:ListStackSetOperations", "cloudformation:DescribeStackEvents", "cloudformation:RegisterType", "cloudformation:ListExports", "cloudformation:DescribeStackSetOperation", "cloudformation:GetStackPolicy", "cloudformation:ListStackSetOperationResults", "cloudformation:SetStackPolicy", "cloudformation:ListChangeSets", "cloudformation:ValidateTemplate", "cloudformation:DescribeStackSet", "cloudformation:DeleteStackSet", "cloudformation:DetectStackSetDrift", "cloudformation:ListTypes", "cloudformation:DetectStackDrift", "cloudformation:UpdateStack", "cloudformation:UpdateStackInstances", "cloudformation:ListImports", "cloudformation:ExecuteChangeSet", "cloudformation:DeregisterType", "cloudformation:ListTypeVersions", "cloudformation:SetTypeDefaultVersion", "cloudformation:DescribeStacks", "cloudformation:CreateChangeSet", "cloudformation:ListTypeRegistrations", "cloudformation:DescribeType", "cloudformation:DescribeStackResources", "cloudformation:CancelUpdateStack", "cloudformation:GetTemplate", "cloudformation:ListStackInstances", "cloudformation:DescribeStackDriftDetectionStatus", "cloudformation:DescribeChangeSet", "cloudformation:RecordHandlerProgress", "cloudformation:SignalResource", "cloudformation:ListStackSets", "cloudformation:GetTemplateSummary", "cloudformation:ListStacks", "cloudformation:CreateStackInstances", "cloudformation:UntagResource", "cloudformation:DeleteStack", "cloudformation:DeleteStackInstances", "cloudformation:CreateStack", "cloudformation:DescribeAccountLimits", "cloudformation:StopStackSetOperation", "cloudformation:CreateStackSet", "cloudformation:CreateUploadBucket", "cloudformation:EstimateTemplateCost", "cloudformation:DescribeStackResource"]
-                Resource: !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/*
+                Action: "cloudformation:*"
+                Resource: "*"
               - Effect: Allow
                 Action:
                   - "iam:PassRole"
