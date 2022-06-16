@@ -57,13 +57,13 @@ Run this command to install the MongoDB Atlas
 Resource Types into the `AWS_REGION` of your choice before running the quickstart.
 
 ```
-cd mongodbatlas-cloudformation-resources\cfn-resources
+cd mongodbatlas-cloudformation-resources/cfn-resources
 ./cfn-submit-helper.sh project cluster database-user project-ip-access-list network-peering
 ```
 
 ### Launch the quickstart stack
 
-The `quickstart-mongodb-atlas.template.yaml` template will
+The `mongodb-atlas-main.template.yaml` template will
 provision a complete you MongoDB Atlas Deployment for you.
 
 This includes the follow resources:
@@ -75,8 +75,8 @@ This includes the follow resources:
 
 ```bash
 repo_root=$(git rev-parse --show-toplevel)
-source <(${repo_root}/quickstart-mongodb-atlas/scripts/export-mongocli-config.py)
-${repo_root}/quickstart-mongodb-atlas/scripts/launch-x-quickstart.sh ${repo_root}/quickstart-mongodb-atlas/templates/quickstart-mongodb-atlas.template.yaml MongoDB-Atlas-Quickstart ParameterKey=OrgId,ParameterValue=${ATLAS_ORG_ID} 
+source <(${repo_root}/scripts/export-mongocli-config.py)
+${repo_root}/scripts/launch-x-quickstart.sh ${repo_root}/templates/mongodb-atlas-main.template.yaml MongoDB-Atlas-Quickstart ParameterKey=OrgId,ParameterValue=${ATLAS_ORG_ID}
 ```
 
 The stack will take ~7-10 minutes to provision. When complete you can find the `mongodb+srv` connection information in the stack outputs.
@@ -116,7 +116,7 @@ see [scripts/aws-iam-mongo-shell.sh](scripts/aws-iam-mongo-shell.sh).
 
 ### Launch the quickstart stack with Peering
 
-The `quickstart-mongodb-atlas-peering.template.yaml` stack will 
+The `mongodb-atlas-peering-existingvpc.template.yaml` stack will
 provision a complete you MongoDB Atlas Deployment with VPC Peering for a given AWS VPC enabled. 
 
 This includes the follow resources:
@@ -130,8 +130,8 @@ This includes the follow resources:
 
 ```bash
 repo_root=$(git rev-parse --show-toplevel)
-source <(${repo_root}/quickstart-mongodb-atlas/scripts/export-mongocli-config.py)
-${repo_root}/quickstart-mongodb-atlas/scripts/launch-x-quickstart.sh ${repo_root}/quickstart-mongodb-atlas/templates/quickstart-mongodb-atlas-peering.template.yaml MongoDB-Atlas-Quickstart ParameterKey=OrgId,ParameterValue=${ATLAS_ORG_ID}  ParameterKey=RouteTableCIDRBlock,ParameterValue=192.168.0.0/24 ParameterKey=VPC,ParameterValue=<YOUR_VPC_ID> 
+source <(${repo_root}/scripts/export-mongocli-config.py)
+${repo_root}/scripts/launch-x-quickstart.sh ${repo_root}/templates/mongodb-atlas-peering-existingvpc.template.yaml MongoDB-Atlas-Quickstart ParameterKey=OrgId,ParameterValue=${ATLAS_ORG_ID} ParameterKey=RouteTableCIDRBlock,ParameterValue=192.168.0.0/24 ParameterKey=VPC,ParameterValue=<YOUR_VPC_ID>
 ```
 
 The stack will take ~7-10 minutes to provision. When complete you can find the `mongodb+srv` connection information in the stack outputs.
