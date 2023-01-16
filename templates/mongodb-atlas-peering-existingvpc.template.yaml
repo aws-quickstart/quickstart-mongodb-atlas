@@ -25,7 +25,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas configuration
       Parameters:
-      - RegisterMongoDBResources
+      - ActivateMongoDBResources
       - ProjectName
       - ClusterMongoDBMajorVersion
       - ClusterName
@@ -54,8 +54,8 @@ Metadata:
         default: MongoDB Atlas API private key
       OrgId:
         default: MongoDB Atlas API organization ID
-      RegisterMongoDBResources:
-        default: Register MongoDB Atlas CloudFormation resources
+      ActivateMongoDBResources:
+        default: Activate MongoDB Atlas CloudFormation resources
       ProjectName:
         default: Name of new Atlas project
       ClusterMongoDBMajorVersion:
@@ -118,31 +118,30 @@ Parameters:
     - "M400_NVME"
     - "R700"
   ClusterRegion:
-    Default: us-east-1
-    Description: AWS Region where the Atlas database cluster runs.
+    Default: US_EAST_1
+    Description: AWS Region where the Atlas database runs.
     Type: String
     AllowedValues:
-    - "us-east-1"
-    - "us-east-2"
-    - "ca-central-1"
-    - "us-west-1"
-    - "us-west-2"
-    - "sa-east-1"
-    - "ap-south-1"
-    - "ap-east-2"
-    - "ap-southeast-1"
-    - "ap-southeast-2"
-    - "ap-northeast-1"
-    - "ap-northeast-2"
-    - "eu-central-1"
-    - "eu-west-1"
-    - "eu-north-1"
-    - "eu-west-1"
-    - "eu-west-2"
-    - "eu-west-3"
-    - "eu-south-1"
-    - "me-south-1"
-    - "af-south-1"
+      - "US_EAST_1"
+      - "US_EAST_2"
+      - "CA_CENTRAL_1"
+      - "US_WEST_1"
+      - "US_WEST_2"
+      - "SA_EAST_1"
+      - "AP_SOUTH_1"
+      - "AP_EAST_2"
+      - "AP_SOUTHEAST_1"
+      - "AP_SOUTHEAST_2"
+      - "AP_NORTHEAST_1"
+      - "AP_NORTHEAST_2"
+      - "EU_CENTRAL_1"
+      - "EU_WEST_1"
+      - "EU_NORTH_1"
+      - "EU_WEST_2"
+      - "EU_WEST_3"
+      - "EU_SOUTH_1"
+      - "ME_SOUTH_1"
+      - "AF_SOUTH_1"
   ClusterMongoDBMajorVersion:
     Description: MongoDB version.
     Type: String
@@ -155,8 +154,8 @@ Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC ID of your existing VPC that you want to peer to. This is typically the VPC that your application uses.
-  RegisterMongoDBResources:
-    Description: 'Choose "Yes" to register MongoDB Atlas CloudFormation resource types. If you already registered resources in your AWS Region, enter "No."'
+  ActivateMongoDBResources:
+    Description: 'Choose "Yes" to activate MongoDB Atlas CloudFormation resource types. If you already activated resources in your AWS Region, enter "No."'
     Type: String
     Default: "Yes"
     AllowedValues:
@@ -191,24 +190,23 @@ Parameters:
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-  RegisterResources: !Equals [!Ref RegisterMongoDBResources, 'Yes']
+  ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
 Resources:
-  RegisterAtlasResources:
-    Condition: RegisterResources
+  ActivateAtlasResources:
+    Condition: ActivateResources
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/register-mongodb-atlas-resources.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
-        QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        Region: !Ref QSS3BucketRegion
   Atlas:
     Metadata:
       PseudoDependsOn: !If
-        - RegisterResources
-        - - !Ref RegisterAtlasResources
+        - ActivateResources
+        - - !Ref ActivateAtlasResources
         - ''
     Type: AWS::CloudFormation::Stack
     Properties:

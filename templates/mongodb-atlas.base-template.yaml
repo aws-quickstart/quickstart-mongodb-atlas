@@ -1,20 +1,15 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering. (qs-1rkorhefe)
+Description: MongoDB Atlas AWS CloudFormation Quickstart. (qs-1rkorhec7)
 Metadata:
   cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006, E3001, E1010 ] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: Network Configuration
-      Parameters:
-      - VPC
-      - RouteTableCIDRBlock
-    - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
       - PublicKey
-      - PrivateKey
+      - PrivateKey 
       - OrgId
     - Label:
         default: MongoDB Atlas Configuration
@@ -24,11 +19,11 @@ Metadata:
       - ClusterRegion
       - ClusterInstanceSize
       - DatabaseUserRoleDatabaseName
+      - VPCCIDR
+      - PrivateSubnetCIDR
+      - AvailabilityZone
+      - VPCRegion
     ParameterLabels:
-      VPC:
-        default: VPC-id to peer with Atlas cluster
-      RouteTableCIDRBlock:
-        default: CIDR block for app to use in VPC Peering.
       PublicKey:
         default: MongoDB Atlas API PublicKey
       PrivateKey:
@@ -45,6 +40,14 @@ Metadata:
         default: MongoDB Atlas Instance Size
       DatabaseUserRoleDatabaseName:
         default: MongoDB Atlas Database User Role Database Name
+      VPCCIDR:
+        default: VPC CIDR.
+      PrivateSubnetCIDR:
+        default: Private subnet CIDR
+      AvailabilityZone:
+         deafault: AZ fo Subnet
+      VPCRegion:
+        default: The AWS Region for VPC private endpoint.
 Parameters:
   PublicKey:
     Description: "Your MongoDB Cloud Public API Key"
@@ -61,14 +64,14 @@ Parameters:
   ProjectName:
     Description: "The name of the project."
     Type: String
-    Default: "aws-quickstart-vpc"
+    Default: "aws-quickstart"
   ClusterName:
     Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
       its name cannot be changed.
     Type: String
     Default: "Cluster-1"
   ClusterInstanceSize:
-    Default: "M10"
+    Default: "M10" 
     Description: Atlas provides different cluster tiers, each with a default storage capacity and RAM size. The cluster you select is used for all the data-bearing hosts in your cluster tier. See https://docs.atlas.mongodb.com/reference/amazon-aws/#amazon-aws.
     Type: String
     AllowedValues:
@@ -135,12 +138,48 @@ Parameters:
     Description: Database User Role Database Name
     Type: String
     Default: "test"
-  VPC:
-    Type: AWS::EC2::VPC::Id
-    Description: VPC-ID of your existing Virtual Private Cloud (VPC) which you wish to peer to your new MongoDB Atlas cluster. This is the VPC that your application uses usually.
-  RouteTableCIDRBlock:
+  PrivateSubnetCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16–28.
+    Default: 10.0.0.0/19
+    Description: CIDR block for the private subnet, located in Availability Zone 1.
     Type: String
-    Description: CIDR block to use for your VPC Peering.
+  VPCCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16–28.
+    Default: 10.0.0.0/16
+    Description: CIDR block for the VPC.
+    Type: String
+  AvailabilityZone:
+    Description: For subnets
+    Type: String
+    Default: "us-east-1a"
+  VPCRegion:
+    Default: "us-west-2"
+    Description: The AWS Region where the Atlas DB Cluster will run.
+    Type: String
+    AllowedValues:
+      - "us-east-1"
+      - "us-east-2"
+      - "ca-central-1"
+      - "us-west-1"
+      - "us-west-2"
+      - "sa-east-1"
+      - "ap-south-1"
+      - "ap-east-2"
+      - "ap-southeast-1"
+      - "ap-southeast-2"
+      - "ap-northeast-1"
+      - "ap-northeast-2"
+      - "eu-central-1"
+      - "eu-west-1"
+      - "eu-north-1"
+      - "eu-west-1"
+      - "eu-west-2"
+      - "eu-west-3"
+      - "eu-south-1"
+      - "me-south-1"
+      - "af-south-1"
 Resources:
   AtlasApiKeySecret:
     Type: 'AWS::SecretsManager::Secret'
@@ -152,23 +191,23 @@ Resources:
       #
       SecretString: !Join ['', ['{"PublicKey":"', !Ref "PublicKey",'", "PrivateKey":"', !Ref "PrivateKey", '", "OrgId":"', !Ref "OrgId", '"}'] ]
       Tags:
-        - Key: mongodb-atlas-quickstart-stack
-          Value: !Sub "${AWS::StackName}"
+      - Key: mongodb-atlas-quickstart-stack 
+        Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
-            Action: 'sts:AssumeRole'
+        - Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+          Action: 'sts:AssumeRole'
   AtlasProject:
     Type: MongoDB::Atlas::Project
     DependsOn: AtlasIAMRole
     Properties:
-      OrgId: !Ref "OrgId"
+      OrgId: !Ref "OrgId" 
       ApiKeys:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
@@ -181,24 +220,13 @@ Resources:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
       AccessList:
-        - IPAddress: "0.0.0.0/1"
-          Comment: "Testing open all ips"
-  AtlasNetworkPeering:
-    Type: MongoDB::Atlas::NetworkPeering
-    Properties:
-      ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
-      AccepterRegionName: !Ref "ClusterRegion"
-      AwsAccountId: !Sub "${AWS::AccountId}"
-      RouteTableCIDRBlock: !Ref "RouteTableCIDRBlock"
-      VpcId: !Ref "VPC"
+      - IPAddress: "0.0.0.0/1"
+        Comment: "Testing open all ips"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
       ApiKeys:
-        PublicKey: !Ref "PublicKey"
+        PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
       ProjectId: !Ref "AtlasProject"
       Name: !Ref "ClusterName"
@@ -213,23 +241,18 @@ Resources:
                 Compute:
                   Enabled: 'false'
                   ScaleDownEnabled: 'false'
-              AnalyticsSpecs:
-                EbsVolumeType: STANDARD
-                InstanceSize: M10
-                NodeCount: '3'
               ElectableSpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: M10
+                InstanceSize: !Ref "ClusterInstanceSize"
                 NodeCount: '3'
               ReadOnlySpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: M10
-                NodeCount: '3'
+                InstanceSize: !Ref "ClusterInstanceSize"
+                NodeCount: '1'
               Priority: '7'
-              RegionName: US_EAST_1
+              RegionName: !Ref ClusterRegion
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
-    DependsOn: AtlasCluster
     Properties:
       ProjectId: !Ref "AtlasProject"
       ApiKeys:
@@ -239,11 +262,34 @@ Resources:
       DatabaseName: "$external"
       AWSIAMType: "ROLE"
       Roles:
-        - RoleName: "readWrite"
-          DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
+      - RoleName: "readWrite"
+        DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-        - Name: !Sub "${AWS::StackName}"
-          Type: "CLUSTER"
+      - Name: !Sub "${AWS::StackName}"
+        Type: "CLUSTER"
+  PrivateEndpoint:
+    Type: MongoDB::Atlas::PrivateEndpoint
+    DependsOn: AtlasCluster
+    Properties:
+      GroupId: !Ref "AtlasProject"
+      ApiKeys:
+        PublicKey: !Ref "PublicKey"
+        PrivateKey: !Ref "PrivateKey"
+      Region: !Ref "VPCRegion"
+      PrivateEndpoints:
+        - VpcId: !Ref PrivateVPC
+          SubnetId: !Ref PrivateSubnet
+  PrivateVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VPCCIDR
+  PrivateSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref PrivateVPC
+      AvailabilityZone: !Ref AvailabilityZone
+      CidrBlock: !Ref PrivateSubnetCIDR
+
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM Role database cluster access"
@@ -280,8 +326,4 @@ Outputs:
     Value: !GetAtt "AtlasCluster.ConnectionStrings.StandardSrv"
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","ClusterSrvAddress" ] ]
-  AtlasNetworkPeering:
-    Description: "Info on the network peering connection"
-    Value: !Ref AtlasNetworkPeering
-    Export:
-      Name: !Join [ "-", [ !Ref "AWS::StackName","AtlasNetworkPeering" ] ]
+
