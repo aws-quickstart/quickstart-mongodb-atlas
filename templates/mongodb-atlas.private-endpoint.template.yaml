@@ -254,6 +254,7 @@ Resources:
         VPCCIDR: !Ref PrivateSubnetCIDR
         AvailabilityZone: !Ref AvailabilityZone
         VPCRegion: !Ref VPCRegion
+        DatabaseUserRoleDatabaseName: !Ref DatabaseUserRoleDatabaseName
   ActivateAtlasResources:
     Condition: ActivateResources
     Type: AWS::CloudFormation::Stack

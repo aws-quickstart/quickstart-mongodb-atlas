@@ -243,11 +243,11 @@ Resources:
                   ScaleDownEnabled: 'false'
               ElectableSpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: !Ref "ClusterInstanceSize"
+                InstanceSize: !Ref ClusterInstanceSize
                 NodeCount: '3'
               ReadOnlySpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: !Ref "ClusterInstanceSize"
+                InstanceSize: !Ref ClusterInstanceSize
                 NodeCount: '1'
               Priority: '7'
               RegionName: !Ref ClusterRegion

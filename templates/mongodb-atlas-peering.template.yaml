@@ -215,15 +215,15 @@ Resources:
                   ScaleDownEnabled: 'false'
               AnalyticsSpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: M10
+                InstanceSize: !Ref "ClusterInstanceSize"
                 NodeCount: '3'
               ElectableSpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: M10
+                InstanceSize: !Ref "ClusterInstanceSize"
                 NodeCount: '3'
               ReadOnlySpecs:
                 EbsVolumeType: STANDARD
-                InstanceSize: M10
+                InstanceSize: !Ref "ClusterInstanceSize"
                 NodeCount: '3'
               Priority: '7'
               RegionName: US_EAST_1

@@ -174,32 +174,6 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
       hosted. If you use your own bucket, you must specify this value.
     Type: String
-  VPCRegion:
-    Default: "us-west-2"
-    Description: The AWS Region where the Atlas DB Cluster will run.
-    Type: String
-    AllowedValues:
-      - "us-east-1"
-      - "us-east-2"
-      - "ca-central-1"
-      - "us-west-1"
-      - "us-west-2"
-      - "sa-east-1"
-      - "ap-south-1"
-      - "ap-east-2"
-      - "ap-southeast-1"
-      - "ap-southeast-2"
-      - "ap-northeast-1"
-      - "ap-northeast-2"
-      - "eu-central-1"
-      - "eu-west-1"
-      - "eu-north-1"
-      - "eu-west-1"
-      - "eu-west-2"
-      - "eu-west-3"
-      - "eu-south-1"
-      - "me-south-1"
-      - "af-south-1"
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   RegisterResources: !Equals [!Ref RegisterMongoDBResources, 'Yes']
@@ -213,7 +187,7 @@ Resources:
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
-        Region: !Ref S3Region
+        Region: !Ref QSS3BucketRegion
   Atlas:
     Type: AWS::CloudFormation::Stack
     Metadata:
