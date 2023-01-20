@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart with VPC Peering. (qs-1rkorhefe)
+Description:  MongoDB Atlas AWS Partner Solution with Private Endpoint. (qs-1tq8f0hrt)
 Metadata:
   cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006, E3001, E1010 ] } }
   AWS::CloudFormation::Interface:
@@ -55,9 +55,9 @@ Metadata:
       VPCCIDR:
         default: VPC CIDR.
       PrivateSubnetCIDR:
-          default: Private subnet CIDR
+        default: Private subnet CIDR
       AvailabilityZone:
-        deafault: AZ fo Subnet
+        default: AZ fo subnet
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
 Parameters:
@@ -141,12 +141,12 @@ Parameters:
   ClusterMongoDBMajorVersion:
     Description: The version of MongoDB
     Type: String
-    Default: "4.4"
+    Default: "5.0"
     AllowedValues:
-      - "3.6"
       - "4.0"
       - "4.2"
       - "4.4"
+      - "5.0"
   DatabaseUserRoleDatabaseName:
     Description: Database User Role Database Name
     Type: String
@@ -238,7 +238,7 @@ Resources:
         - ''
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-atlas.base-template.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-atlas.base.template.yaml'
         - S3Region: !If [ UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion ]
           S3Bucket: !If [ UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName ]
       Parameters:
@@ -251,7 +251,7 @@ Resources:
         PrivateKey: !Ref PrivateKey
         PublicKey: !Ref PublicKey
         PrivateSubnetCIDR: !Ref PrivateSubnetCIDR
-        VPCCIDR: !Ref PrivateSubnetCIDR
+        VPCCIDR: !Ref VPCCIDR
         AvailabilityZone: !Ref AvailabilityZone
         VPCRegion: !Ref VPCRegion
         DatabaseUserRoleDatabaseName: !Ref DatabaseUserRoleDatabaseName
@@ -260,7 +260,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.template.yaml'
         - S3Region: !If [ UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion ]
           S3Bucket: !If [ UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName ]
       Parameters:

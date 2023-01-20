@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Atlas AWS CloudFormation Quickstart. (qs-1rkorhec7)
+Description: MongoDB Atlas AWS CloudFormation Quickstart. (qs-1tq8f0hrt)
 Metadata:
   cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006, E3001, E1010 ] } }
   AWS::CloudFormation::Interface:
@@ -45,7 +45,7 @@ Metadata:
       PrivateSubnetCIDR:
         default: Private subnet CIDR
       AvailabilityZone:
-         deafault: AZ fo Subnet
+        default: AZ for subnet
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
 Parameters:
@@ -128,12 +128,12 @@ Parameters:
   ClusterMongoDBMajorVersion:
     Description: The version of MongoDB
     Type: String
-    Default: "4.4"
+    Default: "5.0"
     AllowedValues:
-    - "3.6"
     - "4.0"
     - "4.2"
     - "4.4"
+    - "5.0"
   DatabaseUserRoleDatabaseName:
     Description: Database User Role Database Name
     Type: String

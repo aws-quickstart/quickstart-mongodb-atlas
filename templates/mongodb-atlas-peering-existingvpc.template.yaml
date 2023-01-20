@@ -145,12 +145,12 @@ Parameters:
   ClusterMongoDBMajorVersion:
     Description: MongoDB version.
     Type: String
-    Default: "4.4"
+    Default: "5.0"
     AllowedValues:
-    - "3.6"
-    - "4.0"
-    - "4.2"
-    - "4.4"
+      - "4.0"
+      - "4.2"
+      - "4.4"
+      - "5.0"
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC ID of your existing VPC that you want to peer to. This is typically the VPC that your application uses.
@@ -197,7 +197,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.template.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:

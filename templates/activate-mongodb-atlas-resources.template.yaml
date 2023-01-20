@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MongoDB Resource activation. (qs-1rkorhec7)
+Description: MongoDB Resource activation. (qs-1tq8f0hrt)
 Metadata:
   cfn-lint: { config: { ignore_checks: [ W9002, W9003, W9006, E3001, E1010 ] } }
   AWS::CloudFormation::Interface:

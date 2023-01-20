@@ -20,7 +20,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas configuration
       Parameters:
-      - RegisterMongoDBResources
+      - ActivateMongoDBResources
       - ProjectName
       - ClusterMongoDBMajorVersion
       - ClusterName
@@ -39,8 +39,8 @@ Metadata:
         default: MongoDB Atlas API private key
       OrgId:
         default: MongoDB Atlas API organization ID
-      RegisterMongoDBResources:
-        default: Register MongoDB Atlas CloudFormation resources
+      ActivateMongoDBResources:
+        default: Activate MongoDB Atlas CloudFormation resources
       ProjectName:
         default: Name of new Atlas project
       ClusterMongoDBMajorVersion:
@@ -137,14 +137,14 @@ Parameters:
   ClusterMongoDBMajorVersion:
     Description: MongoDB version.
     Type: String
-    Default: "4.4"
+    Default: "5.0"
     AllowedValues:
-    - "3.6"
-    - "4.0"
-    - "4.2"
-    - "4.4"
-  RegisterMongoDBResources:
-    Description: 'Choose "Yes" to register MongoDB Atlas CloudFormation resource types. If you already registered resources in your AWS Region, enter "No."'
+      - "4.0"
+      - "4.2"
+      - "4.4"
+      - "5.0"
+  ActivateMongoDBResources:
+    Description: 'Choose "Yes" to activate MongoDB Atlas CloudFormation resource types. If you already activated resources in your AWS Region, enter "No."'
     Type: String
     Default: "Yes"
     AllowedValues:
@@ -176,14 +176,14 @@ Parameters:
     Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-  RegisterResources: !Equals [!Ref RegisterMongoDBResources, 'Yes']
+  ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
 Resources:
-  RegisterAtlasResources:
-    Condition: RegisterResources
+  ActivateAtlasResources:
+    Condition: ActivateResources
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/activate-mongodb-atlas-resources.template.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -192,8 +192,8 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Metadata:
       PseudoDependsOn: !If
-        - RegisterResources
-        - - !Ref RegisterAtlasResources
+        - ActivateResources
+        - - !Ref ActivateAtlasResources
         - ''
     Properties:
       TemplateURL: !Sub
