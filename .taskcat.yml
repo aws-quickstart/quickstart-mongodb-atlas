@@ -3,7 +3,7 @@ general:
 project:
   name: quickstart-mongodb-atlas
   owner: quickstart-eng@amazon.com
-  package_lambda: true
+  package_lambda: false
   lambda_source_path: functions/source
   lambda_zip_path: functions/packages
   shorten_stack_name: true
