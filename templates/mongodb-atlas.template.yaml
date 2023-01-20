@@ -89,31 +89,30 @@ Parameters:
     - "M400_NVME"
     - "R700"
   ClusterRegion:
-    Default: us-east-1
-    Description: The AWS Region where the Atlas DB Cluster will run.
+    Default: US_EAST_1
+    Description: AWS Region where the Atlas database runs.
     Type: String
     AllowedValues:
-    - "us-east-1"
-    - "us-east-2"
-    - "ca-central-1"
-    - "us-west-1"
-    - "us-west-2"
-    - "sa-east-1"
-    - "ap-south-1"
-    - "ap-east-2"
-    - "ap-southeast-1"
-    - "ap-southeast-2"
-    - "ap-northeast-1"
-    - "ap-northeast-2"
-    - "eu-central-1"
-    - "eu-west-1"
-    - "eu-north-1"
-    - "eu-west-1"
-    - "eu-west-2"
-    - "eu-west-3"
-    - "eu-south-1"
-    - "me-south-1"
-    - "af-south-1"
+      - "US_EAST_1"
+      - "US_EAST_2"
+      - "CA_CENTRAL_1"
+      - "US_WEST_1"
+      - "US_WEST_2"
+      - "SA_EAST_1"
+      - "AP_SOUTH_1"
+      - "AP_EAST_2"
+      - "AP_SOUTHEAST_1"
+      - "AP_SOUTHEAST_2"
+      - "AP_NORTHEAST_1"
+      - "AP_NORTHEAST_2"
+      - "EU_CENTRAL_1"
+      - "EU_WEST_1"
+      - "EU_NORTH_1"
+      - "EU_WEST_2"
+      - "EU_WEST_3"
+      - "EU_SOUTH_1"
+      - "ME_SOUTH_1"
+      - "AF_SOUTH_1"
   ClusterMongoDBMajorVersion:
     Description: The version of MongoDB
     Type: String
@@ -173,17 +172,35 @@ Resources:
     Type: MongoDB::Atlas::Cluster
     Properties:
       ApiKeys:
-        PublicKey:  !Ref "PublicKey"
+        PublicKey: !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
       ProjectId: !Ref "AtlasProject"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
-      ReplicationFactor: 3
-      NumShards: 1
-      ProviderSettings:
-        ProviderName: "AWS"
-        InstanceSizeName: !Ref "ClusterInstanceSize" 
-        RegionName: !Ref "ClusterRegion"
+      ClusterType: "REPLICASET"
+      ReplicationSpecs:
+        - NumShards: '1'
+          AdvancedRegionConfigs:
+            - AutoScaling:
+                DiskGB:
+                  Enabled: 'true'
+                Compute:
+                  Enabled: 'false'
+                  ScaleDownEnabled: 'false'
+              AnalyticsSpecs:
+                EbsVolumeType: STANDARD
+                InstanceSize: !Ref "ClusterInstanceSize"
+                NodeCount: '3'
+              ElectableSpecs:
+                EbsVolumeType: STANDARD
+                InstanceSize: !Ref "ClusterInstanceSize"
+                NodeCount: '3'
+              ReadOnlySpecs:
+                EbsVolumeType: STANDARD
+                InstanceSize: !Ref "ClusterInstanceSize"
+                NodeCount: '3'
+              Priority: '7'
+              RegionName: !Ref ClusterRegion
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:

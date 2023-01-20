@@ -33,4 +33,11 @@ tests:
       AvailabilityZones: $[taskcat_genaz_2]
       #RegisterAtlasResources: No
     template: templates/mongodb-atlas-peering-newvpc.template.yaml
-
+  mdb-atlas-pvt-endpoint:
+    regions:
+      - us-east-1
+    parameters:
+      PublicKey: override
+      PrivateKey: override
+      OrgId: override
+    template: templates/mongodb-atlas.private-endpoint.template.yaml

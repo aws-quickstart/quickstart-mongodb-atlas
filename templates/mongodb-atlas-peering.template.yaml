@@ -226,7 +226,7 @@ Resources:
                 InstanceSize: !Ref "ClusterInstanceSize"
                 NodeCount: '3'
               Priority: '7'
-              RegionName: US_EAST_1
+              RegionName: !Ref ClusterRegion
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     DependsOn: AtlasCluster
