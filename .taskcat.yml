@@ -40,4 +40,6 @@ tests:
       PublicKey: override
       PrivateKey: override
       OrgId: override
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
     template: templates/mongodb-atlas.private-endpoint.template.yaml
