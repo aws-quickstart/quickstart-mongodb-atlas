@@ -35,7 +35,7 @@ tests:
     template: templates/mongodb-atlas-peering-newvpc.template.yaml
   mdb-atlas-pvt-endpoint:
     regions:
-      - us-east-1
+      - us-east-2
     parameters:
       PublicKey: override
       PrivateKey: override

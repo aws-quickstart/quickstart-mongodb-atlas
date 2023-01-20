@@ -29,10 +29,10 @@ Metadata:
           - AvailabilityZone
       - Label:
           default: AWS Quick Start configuration
-          Parameters:
-            - QSS3BucketName
-            - QSS3KeyPrefix
-            - QSS3BucketRegion
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
+          - QSS3BucketRegion
     ParameterLabels:
       PublicKey:
         default: MongoDB Atlas API PublicKey
