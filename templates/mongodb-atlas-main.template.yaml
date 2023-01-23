@@ -110,7 +110,7 @@ Parameters:
     - "M400_NVME"
     - "R700"
   ClusterRegion:
-    Default: US_EAST_1
+    Default: "US_EAST_1"
     Description: AWS Region where the Atlas database runs.
     Type: String
     AllowedValues:

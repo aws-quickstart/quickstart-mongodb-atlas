@@ -89,7 +89,7 @@ Parameters:
     - "M400_NVME"
     - "R700"
   ClusterRegion:
-    Default: US_EAST_1
+    Default: "US_EAST_1"
     Description: AWS Region where the Atlas database runs.
     Type: String
     AllowedValues:
@@ -250,7 +250,7 @@ Outputs:
       Name: !Join [ "-", [ !Ref "AWS::StackName","ClusterState" ] ]
   ClusterSrvAddress:
     Description: "Hostname for mongodb+srv:// connection string"
-    Value: !GetAtt "AtlasCluster.SrvAddress"
+    Value: !GetAtt "AtlasCluster.ConnectionStrings.StandardSrv"
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","ClusterSrvAddress" ] ]
 
