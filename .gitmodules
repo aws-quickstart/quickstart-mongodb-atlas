@@ -2,10 +2,3 @@
 	path = submodules/quickstart-aws-vpc
 	url = git@github.com:aws-quickstart/quickstart-aws-vpc.git
 	branch = main
-[submodule "docs/boilerplate"]
-	path = docs/boilerplate
-	url = https://github.com/aws-quickstart/quickstart-documentation-base-common.git
-[submodule "functions/source/quickstart-mongodb-atlas-resources"]
-	path = functions/source/quickstart-mongodb-atlas-resources
-	url = git@github.com:aws-quickstart/quickstart-mongodb-atlas-resources.git
-	branch = main

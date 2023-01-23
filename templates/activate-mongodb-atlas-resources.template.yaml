@@ -131,6 +131,14 @@ Resources:
                   - "*"
                 Resource: "*"
   MongoDBPrivateEndpointExecutionRole:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyWildcardResource
+          ignore_reasons:
+            EIAMPolicyWildcardResource: >-
+              Create and Delete VPC Endpoint permissions are necessary.
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:

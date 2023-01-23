@@ -3,7 +3,7 @@ general:
 project:
   name: quickstart-mongodb-atlas
   owner: quickstart-eng@amazon.com
-  package_lambda: true
+  package_lambda: false
   lambda_source_path: functions/source
   lambda_zip_path: functions/packages
   shorten_stack_name: true
@@ -35,9 +35,11 @@ tests:
     template: templates/mongodb-atlas-peering-newvpc.template.yaml
   mdb-atlas-pvt-endpoint:
     regions:
-      - us-east-1
+      - us-east-2
     parameters:
       PublicKey: override
       PrivateKey: override
       OrgId: override
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
     template: templates/mongodb-atlas.private-endpoint.template.yaml
