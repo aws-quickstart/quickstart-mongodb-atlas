@@ -118,7 +118,7 @@ Parameters:
     - "M400_NVME"
     - "R700"
   ClusterRegion:
-    Default: US_EAST_1
+    Default: "US_EAST_1"
     Description: AWS Region where the Atlas database runs.
     Type: String
     AllowedValues:
@@ -224,6 +224,7 @@ Resources:
         PrivateKey: !Ref PrivateKey
         PublicKey: !Ref PublicKey
         RouteTableCIDRBlock: !Ref RouteTableCIDRBlock
+        VPCRegion: !Ref QSS3BucketRegion
         VPC: !Ref VPC
 Outputs:
   AtlasIAMRole:

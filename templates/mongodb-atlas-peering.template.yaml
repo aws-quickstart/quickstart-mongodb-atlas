@@ -10,6 +10,7 @@ Metadata:
       Parameters:
       - VPC
       - RouteTableCIDRBlock
+      - VPCRegion
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
@@ -45,6 +46,8 @@ Metadata:
         default: MongoDB Atlas Instance Size
       DatabaseUserRoleDatabaseName:
         default: MongoDB Atlas Database User Role Database Name
+      VPCRegion:
+        default: The AWS Region for VPC
 Parameters:
   PublicKey:
     Description: "Your MongoDB Cloud Public API Key"
@@ -98,7 +101,7 @@ Parameters:
     - "M400_NVME"
     - "R700"
   ClusterRegion:
-    Default: US_EAST_1
+    Default: "US_EAST_1"
     Description: AWS Region where the Atlas database runs.
     Type: String
     AllowedValues:
@@ -141,6 +144,10 @@ Parameters:
   RouteTableCIDRBlock:
     Type: String
     Description: CIDR block to use for your VPC Peering.
+  VPCRegion:
+    Default: 'us-east-1'
+    Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, you must specify this value.
+    Type: String
 Resources:
   AtlasApiKeySecret:
     Type: 'AWS::SecretsManager::Secret'
@@ -190,7 +197,7 @@ Resources:
       ApiKeys:
         PublicKey:  !Ref "PublicKey"
         PrivateKey: !Ref "PrivateKey"
-      AccepterRegionName: !Ref "ClusterRegion"
+      AccepterRegionName: !Ref "VPCRegion"
       AwsAccountId: !Sub "${AWS::AccountId}"
       RouteTableCIDRBlock: !Ref "RouteTableCIDRBlock"
       VpcId: !Ref "VPC"
