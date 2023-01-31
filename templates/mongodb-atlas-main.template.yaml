@@ -88,27 +88,14 @@ Parameters:
     - "M20"
     - "M30"
     - "M40"
-    - "R40"
-    - "M40_NVME"
     - "M50"
-    - "R50"
-    - "M50_NVME"
     - "M60"
-    - "R60"
-    - "M60_NVME"
     - "M80"
-    - "R80"
-    - "M80_NVME"
-    - "M100"
     - "M140"
     - "M200"
-    - "R200"
-    - "M200_NVME"
     - "M300"
-    - "R300"
-    - "R400"
-    - "M400_NVME"
-    - "R700"
+    - "M400"
+    - "M700"
   ClusterRegion:
     Default: "US_EAST_1"
     Description: AWS Region where the Atlas database runs.
@@ -124,8 +111,10 @@ Parameters:
       - "AP_EAST_2"
       - "AP_SOUTHEAST_1"
       - "AP_SOUTHEAST_2"
+      - "AP_SOUTHEAST_3"
       - "AP_NORTHEAST_1"
       - "AP_NORTHEAST_2"
+      - "AP_NORTHEAST_3"
       - "EU_CENTRAL_1"
       - "EU_WEST_1"
       - "EU_NORTH_1"
@@ -139,10 +128,9 @@ Parameters:
     Type: String
     Default: "5.0"
     AllowedValues:
-      - "4.0"
-      - "4.2"
       - "4.4"
       - "5.0"
+      - "6.0"
   ActivateMongoDBResources:
     Description: 'Choose "Yes" to activate MongoDB Atlas CloudFormation resource types. If you already activated resources in your AWS Region, enter "No."'
     Type: String
