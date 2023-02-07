@@ -90,7 +90,6 @@ Parameters:
     - "M80"
     - "R80"
     - "M80_NVME"
-    - "M100"
     - "M140"
     - "M200"
     - "R200"
@@ -115,8 +114,10 @@ Parameters:
       - "AP_EAST_2"
       - "AP_SOUTHEAST_1"
       - "AP_SOUTHEAST_2"
+      - "AP_SOUTHEAST_3"
       - "AP_NORTHEAST_1"
       - "AP_NORTHEAST_2"
+      - "AP_NORTHEAST_3"
       - "EU_CENTRAL_1"
       - "EU_WEST_1"
       - "EU_NORTH_1"
@@ -130,10 +131,9 @@ Parameters:
     Type: String
     Default: "5.0"
     AllowedValues:
-    - "4.0"
-    - "4.2"
     - "4.4"
     - "5.0"
+    - "6.0"
   DatabaseUserRoleDatabaseName:
     Description: Database User Role Database Name
     Type: String
@@ -169,8 +169,10 @@ Parameters:
       - "ap-east-2"
       - "ap-southeast-1"
       - "ap-southeast-2"
+      - "ap-southeast-3"
       - "ap-northeast-1"
       - "ap-northeast-2"
+      - "ap-northeast-3"
       - "eu-central-1"
       - "eu-west-1"
       - "eu-north-1"
@@ -278,7 +280,8 @@ Resources:
       Region: !Ref "VPCRegion"
       PrivateEndpoints:
         - VpcId: !Ref PrivateVPC
-          SubnetId: !Ref PrivateSubnet
+          SubnetIds:
+          - !Ref PrivateSubnet
   PrivateVPC:
     Type: 'AWS::EC2::VPC'
     Properties:

@@ -107,7 +107,6 @@ Parameters:
     - "M80"
     - "R80"
     - "M80_NVME"
-    - "M100"
     - "M140"
     - "M200"
     - "R200"
@@ -132,8 +131,10 @@ Parameters:
       - "AP_EAST_2"
       - "AP_SOUTHEAST_1"
       - "AP_SOUTHEAST_2"
+      - "AP_SOUTHEAST_3"
       - "AP_NORTHEAST_1"
       - "AP_NORTHEAST_2"
+      - "AP_NORTHEAST_3"
       - "EU_CENTRAL_1"
       - "EU_WEST_1"
       - "EU_NORTH_1"
@@ -147,10 +148,9 @@ Parameters:
     Type: String
     Default: "5.0"
     AllowedValues:
-      - "4.0"
-      - "4.2"
       - "4.4"
       - "5.0"
+      - "6.0"
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC ID of your existing VPC that you want to peer to. This is typically the VPC that your application uses.
