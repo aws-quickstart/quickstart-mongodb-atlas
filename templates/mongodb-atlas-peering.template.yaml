@@ -14,9 +14,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
-      - PublicKey
-      - PrivateKey
-      - OrgId
+      - Profile
     - Label:
         default: MongoDB Atlas Configuration
       Parameters:
@@ -30,10 +28,8 @@ Metadata:
         default: VPC-id to peer with Atlas cluster
       RouteTableCIDRBlock:
         default: CIDR block for app to use in VPC Peering.
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: A secret with name cfn/atlas/profile/{Profile}
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -49,14 +45,10 @@ Metadata:
       VPCRegion:
         default: The AWS Region for VPC
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -137,18 +129,6 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, you must specify this value.
     Type: String
 Resources:
-  AtlasApiKeySecret:
-    Type: 'AWS::SecretsManager::Secret'
-    Properties:
-      Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: MongoDB Atlas API Key
-      #
-      # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
-      #
-      SecretString: !Join ['', ['{"PublicKey":"', !Ref "PublicKey",'", "PrivateKey":"', !Ref "PrivateKey", '", "OrgId":"', !Ref "OrgId", '"}'] ]
-      Tags:
-        - Key: mongodb-atlas-quickstart-stack
-          Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -164,17 +144,13 @@ Resources:
     DependsOn: AtlasIAMRole
     Properties:
       OrgId: !Ref "OrgId"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       AccessList:
         - IPAddress: "0.0.0.0/1"
           Comment: "Testing open all ips"
@@ -182,9 +158,7 @@ Resources:
     Type: MongoDB::Atlas::NetworkPeering
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       AccepterRegionName: !Ref "VPCRegion"
       AwsAccountId: !Sub "${AWS::AccountId}"
       RouteTableCIDRBlock: !Ref "RouteTableCIDRBlock"
@@ -192,9 +166,7 @@ Resources:
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
-      ApiKeys:
-        PublicKey: !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       ProjectId: !Ref "AtlasProject"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
@@ -227,9 +199,7 @@ Resources:
     DependsOn: AtlasCluster
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       Username: !GetAtt "AtlasIAMRole.Arn"
       DatabaseName: "$external"
       AWSIAMType: "ROLE"

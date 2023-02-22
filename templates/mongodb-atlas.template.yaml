@@ -8,8 +8,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
-      - PublicKey
-      - PrivateKey 
+      - Profile
       - OrgId
     - Label:
         default: MongoDB Atlas Configuration
@@ -20,10 +19,8 @@ Metadata:
       - ClusterInstanceSize
       - DatabaseUserRoleDatabaseName
     ParameterLabels:
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: A secret with name cfn/atlas/profile/{Profile}
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -37,14 +34,10 @@ Metadata:
       DatabaseUserRoleDatabaseName:
         default: MongoDB Atlas Database User Role Database Name
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -127,18 +120,6 @@ Parameters:
     Type: String
     Default: "test"
 Resources:
-  AtlasApiKeySecret:
-    Type: 'AWS::SecretsManager::Secret'
-    Properties:
-      Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: MongoDB Atlas API Key
-      #
-      # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
-      #
-      SecretString: !Join ['', ['{"PublicKey":"', !Ref "PublicKey",'", "PrivateKey":"', !Ref "PrivateKey", '", "OrgId":"', !Ref "OrgId", '"}'] ]
-      Tags:
-      - Key: mongodb-atlas-quickstart-stack 
-        Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -153,27 +134,21 @@ Resources:
     Type: MongoDB::Atlas::Project
     DependsOn: AtlasIAMRole
     Properties:
-      OrgId: !Ref "OrgId" 
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      OrgId: !Ref "OrgId"
+      Profile: !Ref "Profile"
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile: !Ref "Profile"
       AccessList:
       - IPAddress: "0.0.0.0/1"
         Comment: "Testing open all ips"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
-      ApiKeys:
-        PublicKey: !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile: !Ref "Profile"
       ProjectId: !Ref "AtlasProject"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
@@ -205,9 +180,7 @@ Resources:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       Username: !GetAtt "AtlasIAMRole.Arn"
       DatabaseName: "$external"
       AWSIAMType: "ROLE"

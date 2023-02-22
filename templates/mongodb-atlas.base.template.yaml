@@ -8,8 +8,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
-      - PublicKey
-      - PrivateKey 
+      - Profile
       - OrgId
     - Label:
         default: MongoDB Atlas Configuration
@@ -24,10 +23,8 @@ Metadata:
       - AvailabilityZone
       - VPCRegion
     ParameterLabels:
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: Secret profile
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -49,14 +46,10 @@ Metadata:
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with the cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -171,18 +164,6 @@ Parameters:
       - "me-south-1"
       - "af-south-1"
 Resources:
-  AtlasApiKeySecret:
-    Type: 'AWS::SecretsManager::Secret'
-    Properties:
-      Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: MongoDB Atlas API Key
-      #
-      # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
-      #
-      SecretString: !Join ['', ['{"PublicKey":"', !Ref "PublicKey",'", "PrivateKey":"', !Ref "PrivateKey", '", "OrgId":"', !Ref "OrgId", '"}'] ]
-      Tags:
-      - Key: mongodb-atlas-quickstart-stack 
-        Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -193,31 +174,33 @@ Resources:
           Principal:
             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
           Action: 'sts:AssumeRole'
+        - Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Service: ecs-tasks.amazonaws.com
+          Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
   AtlasProject:
     Type: MongoDB::Atlas::Project
     DependsOn: AtlasIAMRole
     Properties:
-      OrgId: !Ref "OrgId" 
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      OrgId: !Ref "OrgId"
+      Profile: !Ref "Profile"
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile: !Ref "Profile"
       AccessList:
       - IPAddress: "0.0.0.0/1"
         Comment: "Testing open all ips"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile: !Ref "Profile"
       ProjectId: !Ref "AtlasProject"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
@@ -245,9 +228,7 @@ Resources:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
       ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile: !Ref "Profile"
       Username: !GetAtt "AtlasIAMRole.Arn"
       DatabaseName: "$external"
       AWSIAMType: "ROLE"
@@ -262,9 +243,7 @@ Resources:
     DependsOn: AtlasCluster
     Properties:
       GroupId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey: !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile: !Ref "Profile"
       Region: !Ref "VPCRegion"
       PrivateEndpoints:
         - VpcId: !Ref PrivateVPC

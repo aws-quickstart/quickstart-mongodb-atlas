@@ -14,8 +14,7 @@ Metadata:
       - Label:
           default: MongoDB Atlas ApiKey Configuration
         Parameters:
-          - PublicKey
-          - PrivateKey
+          - Profile
           - OrgId
       - Label:
           default: MongoDB Atlas Configuration
@@ -34,10 +33,8 @@ Metadata:
           - QSS3KeyPrefix
           - QSS3BucketRegion
     ParameterLabels:
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: A secret with the name cfn/atlas/profile/{Profile}
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -61,14 +58,10 @@ Metadata:
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with the cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -237,8 +230,7 @@ Resources:
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
-        PrivateKey: !Ref PrivateKey
-        PublicKey: !Ref PublicKey
+        Profile: !Ref Profile
         PrivateSubnetCIDR: !Ref PrivateSubnetCIDR
         VPCCIDR: !Ref VPCCIDR
         AvailabilityZone: !Ref AvailabilityZone
