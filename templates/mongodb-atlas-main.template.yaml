@@ -140,7 +140,6 @@ Parameters:
     Type: String
     Default: "5.0"
     AllowedValues:
-      - "4.2"
       - "4.4"
       - "5.0"
       - "6.0"
