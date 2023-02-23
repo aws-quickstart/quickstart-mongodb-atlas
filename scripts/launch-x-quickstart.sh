@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo "[!] quickstart"
 set -ex
 TEMPLATE="${1:-templates/mongodb-atlas.template.yaml}"
 STACK_NAME="${2:-aws-quickstart}"
