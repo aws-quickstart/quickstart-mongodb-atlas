@@ -25,6 +25,8 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - DatabaseUserName
+      - DatabasePassword
     - Label:
         default: AWS Quick Start configuration
       Parameters:
@@ -54,6 +56,10 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
   Profile:
     Description: "A secret with name cfn/atlas/profile/{Profile}"
@@ -154,6 +160,14 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
       hosted. If you use your own bucket, you must specify this value.
     Type: String
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
@@ -188,6 +202,8 @@ Resources:
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
         Profile: !Ref Profile
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM role database cluster access."

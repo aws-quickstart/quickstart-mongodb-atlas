@@ -26,6 +26,8 @@ Metadata:
           - DatabaseUserRoleDatabaseName
           - ActivateMongoDBResources
           - AvailabilityZone
+          - DatabaseUserName
+          - DatabasePassword
       - Label:
           default: AWS Quick Start configuration
         Parameters:
@@ -57,6 +59,10 @@ Metadata:
         default: AZ fo subnet
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
   Profile:
     Description: "A secret with the cfn/atlas/profile/{Profile}"
@@ -206,6 +212,14 @@ Parameters:
     Description: AZ for subnet creation
     Type: String
     Default: "us-east-1a"
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
@@ -236,6 +250,8 @@ Resources:
         AvailabilityZone: !Ref AvailabilityZone
         VPCRegion: !Ref VPCRegion
         DatabaseUserRoleDatabaseName: !Ref DatabaseUserRoleDatabaseName
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
   ActivateAtlasResources:
     Condition: ActivateResources
     Type: AWS::CloudFormation::Stack

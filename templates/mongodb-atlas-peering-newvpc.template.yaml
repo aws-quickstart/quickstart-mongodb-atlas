@@ -35,6 +35,8 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - DatabaseUserName
+      - DatabasePassword
     - Label:
         default: AWS Quick Start configuration
       Parameters:
@@ -78,6 +80,10 @@ Metadata:
         default: AWS Region for Atlas cluster
       ClusterInstanceSize:
         default: MongoDB Atlas instance size
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
   AvailabilityZones:
     Description: List of Availability Zones to use for the VPC subnets.
@@ -215,6 +221,14 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
       hosted. If you use your own bucket, you must specify this value.
     Type: String
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
@@ -258,6 +272,8 @@ Resources:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
 
 Outputs:
   AtlasIAMRole:

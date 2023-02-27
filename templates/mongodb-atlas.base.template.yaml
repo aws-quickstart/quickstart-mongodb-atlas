@@ -22,6 +22,8 @@ Metadata:
       - PrivateSubnetCIDR
       - AvailabilityZone
       - VPCRegion
+      - DatabaseUserName
+      - DatabasePassword
     ParameterLabels:
       Profile:
         default: Secret profile
@@ -45,6 +47,10 @@ Metadata:
         default: AZ for subnet
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+          default: MongoDB Atlas Database User Password
 Parameters:
   Profile:
     Description: "A secret with the cfn/atlas/profile/{Profile}"
@@ -163,6 +169,14 @@ Parameters:
       - "eu-south-1"
       - "me-south-1"
       - "af-south-1"
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Resources:
   AtlasIAMRole:
     Type: AWS::IAM::Role
@@ -192,7 +206,7 @@ Resources:
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile: !Ref "Profile"
       AccessList:
       - IPAddress: "0.0.0.0/1"
@@ -201,7 +215,7 @@ Resources:
     Type: MongoDB::Atlas::Cluster
     Properties:
       Profile: !Ref "Profile"
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
@@ -227,11 +241,11 @@ Resources:
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile: !Ref "Profile"
-      Username: !GetAtt "AtlasIAMRole.Arn"
-      DatabaseName: "$external"
-      AWSIAMType: "ROLE"
+      Username: !Ref "DatabaseUserName"
+      Password: !Ref "DatabasePassword"
+      DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Roles:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
@@ -242,7 +256,7 @@ Resources:
     Type: MongoDB::Atlas::PrivateEndpoint
     DependsOn: AtlasCluster
     Properties:
-      GroupId: !Ref "AtlasProject"
+      GroupId: !GetAtt "AtlasProject.Id"
       Profile: !Ref "Profile"
       Region: !Ref "VPCRegion"
       PrivateEndpoints:

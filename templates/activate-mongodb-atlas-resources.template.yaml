@@ -44,7 +44,7 @@ Resources:
       PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-Cluster' ] ]
       Type: RESOURCE
       TypeName: MongoDB::Atlas::Cluster
-      ExecutionRoleArn: !GetAtt MongoDBCustomResourceClusterExecutionRole.Arn
+      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateProjectIpAccessListType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
@@ -66,23 +66,23 @@ Resources:
       Type: RESOURCE
       TypeName: MongoDB::Atlas::Project
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
-  ActivateNetworkPeeringType:
-    Type: AWS::CloudFormation::TypeActivation
-    Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-NetworkPeering' ] ]
-      Type: RESOURCE
-      TypeName: MongoDB::Atlas::NetworkPeering
-      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
-  ActivatePrivateEndpointType:
-    Type: AWS::CloudFormation::TypeActivation
-    Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-PrivateEndpoint' ] ]
-      Type: RESOURCE
-      TypeName: MongoDB::Atlas::PrivateEndpoint
-      ExecutionRoleArn: !GetAtt MongoDBPrivateEndpointExecutionRole.Arn
+#  ActivateNetworkPeeringType:
+#    Type: AWS::CloudFormation::TypeActivation
+#    Properties:
+#      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-NetworkPeering' ] ]
+#      Type: RESOURCE
+#      TypeName: MongoDB::Atlas::NetworkPeering
+#      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
+#  ActivatePrivateEndpointType:
+#    Type: AWS::CloudFormation::TypeActivation
+#    Properties:
+#      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-PrivateEndpoint' ] ]
+#      Type: RESOURCE
+#      TypeName: MongoDB::Atlas::PrivateEndpoint
+#      ExecutionRoleArn: !GetAtt MongoDBPrivateEndpointExecutionRole.Arn
 
 
-  MongoDBCustomResourceClusterExecutionRole:
+  MongoDBCustomResourceExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       MaxSessionDuration: 8400
@@ -102,36 +102,8 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "secretsmanager:CreateSecret"
-                  - "secretsmanager:DeleteSecret"
-                  - "secretsmanager:DescribeSecret"
                   - "secretsmanager:GetSecretValue"
-                  - "secretsmanager:ListSecrets"
-                  - "secretsmanager:PutSecretValue"
-                  - "secretsmanager:TagResource"
                 Resource: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:*
-  MongoDBCustomResourceExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      MaxSessionDuration: 8400
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - "resources.cloudformation.amazonaws.com"
-            Action: sts:AssumeRole
-      Path: "/"
-      Policies:
-        - PolicyName: ResourceTypePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Deny
-                Action:
-                  - "*"
-                Resource: "*"
   MongoDBPrivateEndpointExecutionRole:
     Metadata:
       cfn-lint:
@@ -162,4 +134,5 @@ Resources:
                 Action:
                   - 'ec2:CreateVpcEndpoint'
                   - 'ec2:DeleteVpcEndpoints'
+                  - "secretsmanager:GetSecretValue"
                 Resource: '*'

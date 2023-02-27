@@ -18,6 +18,8 @@ Metadata:
       - ClusterRegion
       - ClusterInstanceSize
       - DatabaseUserRoleDatabaseName
+      - DatabaseUserName
+      - DatabasePassword
     ParameterLabels:
       Profile:
         default: A secret with name cfn/atlas/profile/{Profile}
@@ -33,6 +35,10 @@ Metadata:
         default: MongoDB Atlas Instance Size
       DatabaseUserRoleDatabaseName:
         default: MongoDB Atlas Database User Role Database Name
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
   Profile:
     Description: "A secret with name cfn/atlas/profile/{Profile}"
@@ -119,6 +125,14 @@ Parameters:
     Description: Database User Role Database Name
     Type: String
     Default: "test"
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Resources:
   AtlasIAMRole:
     Type: AWS::IAM::Role
@@ -126,10 +140,18 @@ Resources:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-        - Effect: Allow
-          Principal:
-            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
-          Action: 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
   AtlasProject:
     Type: MongoDB::Atlas::Project
     DependsOn: AtlasIAMRole
@@ -140,7 +162,7 @@ Resources:
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile: !Ref "Profile"
       AccessList:
       - IPAddress: "0.0.0.0/1"
@@ -149,7 +171,7 @@ Resources:
     Type: MongoDB::Atlas::Cluster
     Properties:
       Profile: !Ref "Profile"
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
@@ -179,7 +201,7 @@ Resources:
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
       Username: !GetAtt "AtlasIAMRole.Arn"
       DatabaseName: "$external"
