@@ -99,7 +99,7 @@ Parameters:
       - "US_WEST_2"
       - "SA_EAST_1"
       - "AP_SOUTH_1"
-      - "AP_EAST_2"
+      - "AP_EAST_1"
       - "AP_SOUTHEAST_1"
       - "AP_SOUTHEAST_2"
       - "AP_NORTHEAST_1"
@@ -117,10 +117,9 @@ Parameters:
     Type: String
     Default: "5.0"
     AllowedValues:
-    - "4.0"
-    - "4.2"
     - "4.4"
     - "5.0"
+    - "6.0"
   DatabaseUserRoleDatabaseName:
     Description: Database User Role Database Name
     Type: String
