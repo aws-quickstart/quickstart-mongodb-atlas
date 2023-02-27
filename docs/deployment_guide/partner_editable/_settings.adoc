@@ -3,7 +3,7 @@
 :partner-product-name: MongoDB Atlas
 :partner-product-short-name: MongoDB Atlas
 :partner-company-name: MongoDB Inc.
-:doc-month: January
+:doc-month: February
 :doc-year: 2023
 :partner-contributors: {partner-company-name}
 // :other-contributors: Akua Mansa, Trek10
