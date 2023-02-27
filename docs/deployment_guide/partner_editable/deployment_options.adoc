@@ -1,0 +1,11 @@
+// Edit this placeholder text as necessary to describe the deployment options.
+
+This Partner Solution provides the following deployment options:
+
+* https://fwd.aws/jQ46Q[Deploy {partner-product-short-name} without VPC peering^]. This option peers {partner-product-short-name} with your existing VPC.
+* https://fwd.aws/a6pXQ[Deploy {partner-product-short-name} with VPC peering into a new VPC (end-to-end deployment)^]. This option builds a complete MongoDB Atlas environment within AWS consisting of a project, cluster, and more.
+* https://fwd.aws/vBj75[Deploy {partner-product-short-name} with VPC peering into an existing VPC^]. This option peers {partner-product-short-name} with a new VPC.
+* https://fwd.aws/z6e49[Deploy {partner-product-short-name} with Private Endpoint^]. This option connects {partner-product-short-name} AWS VPC using Private Endpoint.
+
+
+For greater security, each option provisions an AWS IAM role and corresponding MongoDB database user. This Partner Solution provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings.
