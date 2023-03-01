@@ -203,9 +203,9 @@ Resources:
     Properties:
       ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
-      Username: !GetAtt "AtlasIAMRole.Arn"
-      DatabaseName: "$external"
-      AWSIAMType: "ROLE"
+      Username: !Ref "DatabaseUserName"
+      Password: !Ref "DatabasePassword"
+      DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Roles:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
