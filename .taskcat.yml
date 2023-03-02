@@ -17,6 +17,7 @@ tests:
       QSS3BucketRegion: $[taskcat_current_region]
       ClusterName: tcat-$[taskcat_random-string]-$[taskcat_current_region]
       ClusterRegion: US_EAST_1
+      DatabasePassword: override
     template: templates/mongodb-atlas-main.template.yaml
   mdb-atlas-vpc:
     regions:
@@ -32,6 +33,7 @@ tests:
       AvailabilityZones: $[taskcat_genaz_2]
       ClusterName: tcat-$[taskcat_random-string]-$[taskcat_current_region]
       ClusterRegion: US_WEST_1
+      DatabasePassword: override
     template: templates/mongodb-atlas-peering-newvpc.template.yaml
   mdb-atlas-pvt-endpoint:
     regions:
@@ -47,4 +49,5 @@ tests:
       AvailabilityZone: us-east-2a
       VPCRegion: $[taskcat_current_region]
       ClusterName: tcat-$[taskcat_random-string]-$[taskcat_current_region]
+      DatabasePassword: override
     template: templates/mongodb-atlas.private-endpoint.template.yaml
