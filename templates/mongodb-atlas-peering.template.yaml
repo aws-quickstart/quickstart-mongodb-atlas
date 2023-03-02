@@ -121,9 +121,9 @@ Parameters:
       - "5.0"
       - "6.0"
   DatabaseUserRoleDatabaseName:
-    Description: Database User Role Database Name
+    Description: Database Name
     Type: String
-    Default: "test"
+    Default: "admin"
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC-ID of your existing Virtual Private Cloud (VPC) which you wish to peer to your new MongoDB Atlas cluster. This is the VPC that your application uses usually.
@@ -216,7 +216,7 @@ Resources:
       Profile:  !Ref "Profile"
       Username: !Ref "DatabaseUserName"
       Password: !Ref "DatabasePassword"
-      DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
+      DatabaseName:  "$external"
       Roles:
         - RoleName: "readWrite"
           DatabaseName: !Ref "DatabaseUserRoleDatabaseName"

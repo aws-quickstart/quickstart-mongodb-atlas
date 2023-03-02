@@ -124,7 +124,7 @@ Parameters:
   DatabaseUserRoleDatabaseName:
     Description: Database Name
     Type: String
-    Default: "admin"
+    Default: "test"
   PrivateSubnetCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16–28.
@@ -245,7 +245,7 @@ Resources:
       Profile: !Ref "Profile"
       Username: !Ref "DatabaseUserName"
       Password: !Ref "DatabasePassword"
-      DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
+      DatabaseName: "$external"
       Roles:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"

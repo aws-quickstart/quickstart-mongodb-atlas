@@ -136,7 +136,7 @@ Parameters:
   DatabaseUserRoleDatabaseName:
     Description: Database User Role Database Name
     Type: String
-    Default: "admin"
+    Default: "test"
   VPCRegion:
     Default: "us-east-1"
     Description: The AWS Region where the Atlas DB Cluster will run.
