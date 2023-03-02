@@ -48,7 +48,7 @@ Metadata:
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
       DatabaseUserRoleDatabaseName:
-        default: MongoDB Atlas Database User Role Database Name
+        default: MongoDB Atlas Database Name
       ActivateMongoDBResources:
         default: Activate MongoDB Atlas CloudFormation resources
       VPCCIDR:
@@ -136,7 +136,7 @@ Parameters:
   DatabaseUserRoleDatabaseName:
     Description: Database User Role Database Name
     Type: String
-    Default: "test"
+    Default: "admin"
   VPCRegion:
     Default: "us-east-1"
     Description: The AWS Region where the Atlas DB Cluster will run.

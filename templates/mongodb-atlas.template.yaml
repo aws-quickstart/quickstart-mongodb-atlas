@@ -122,9 +122,9 @@ Parameters:
     - "4.4"
     - "5.0"
   DatabaseUserRoleDatabaseName:
-    Description: Database User Role Database Name
+    Description: Database Name
     Type: String
-    Default: "test"
+    Default: "admin"
   DatabaseUserName:
     Description: MongoDB Atlas Database User  Name.
     Type: String
