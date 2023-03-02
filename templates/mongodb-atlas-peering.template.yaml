@@ -163,7 +163,7 @@ Resources:
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
       AccessList:
         - IPAddress: "0.0.0.0/1"
@@ -171,7 +171,7 @@ Resources:
   AtlasNetworkPeering:
     Type: MongoDB::Atlas::NetworkPeering
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
       AccepterRegionName: !Ref "VPCRegion"
       AwsAccountId: !Sub "${AWS::AccountId}"
@@ -181,7 +181,7 @@ Resources:
     Type: MongoDB::Atlas::Cluster
     Properties:
       Profile:  !Ref "Profile"
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
@@ -212,7 +212,7 @@ Resources:
     Type: MongoDB::Atlas::DatabaseUser
     DependsOn: AtlasCluster
     Properties:
-      ProjectId: !Ref "AtlasProject"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
       Username: !Ref "DatabaseUserName"
       Password: !Ref "DatabasePassword"
