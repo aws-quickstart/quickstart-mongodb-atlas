@@ -80,8 +80,13 @@ Resources:
       Type: RESOURCE
       TypeName: MongoDB::Atlas::PrivateEndpoint
       ExecutionRoleArn: !GetAtt MongoDBPrivateEndpointExecutionRole.Arn
-
-
+  ActivateNetworkContainerType:
+    Type: AWS::CloudFormation::TypeActivation
+    Properties:
+      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-NetworkContainer' ] ]
+      Type: RESOURCE
+      TypeName: MongoDB::Atlas::NetworkContainer
+      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   MongoDBCustomResourceExecutionRole:
     Type: AWS::IAM::Role
     Properties:

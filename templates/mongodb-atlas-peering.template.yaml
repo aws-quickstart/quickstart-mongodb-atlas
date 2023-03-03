@@ -235,6 +235,7 @@ Resources:
     Type: MongoDB::Atlas::NetworkContainer
     DependsOn: AtlasCluster
     Properties:
+      Profile:  !Ref "Profile"
       AtlasCidrBlock: !Ref AtlasCidrBlock
       RegionName: !Ref ClusterRegion
       ProjectId: !GetAtt "AtlasProject.Id"
