@@ -15,7 +15,7 @@ Metadata:
         default: Network configuration
       Parameters:
       - AvailabilityZones
-      - VPCCIDR
+      - AtlasCidrBlock
       - PrivateSubnet1CIDR
       - PrivateSubnet2CIDR
       - PublicSubnet1CIDR
@@ -48,6 +48,8 @@ Metadata:
         default: Availability Zones
       VPCCIDR:
         default: VPC CIDR.
+      AtlasCidrBlock:
+        default: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -119,6 +121,9 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC.
     Type: String
+  AtlasCidrBlock:
+    Type: String
+    Description: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
   Profile:
     Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
@@ -274,6 +279,7 @@ Resources:
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         DatabaseUserName: !Ref DatabaseUserName
         DatabasePassword: !Ref DatabasePassword
+        AtlasCidrBlock: !Ref AtlasCidrBlock
 
 Outputs:
   AtlasIAMRole:

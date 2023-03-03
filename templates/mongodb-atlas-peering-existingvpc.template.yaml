@@ -16,6 +16,7 @@ Metadata:
       Parameters:
       - VPC
       - RouteTableCIDRBlock
+      - AtlasCidrBlock
     - Label:
         default: MongoDB Atlas API key configuration
       Parameters:
@@ -41,6 +42,8 @@ Metadata:
     ParameterLabels:
       VPC:
         default: AWS VPC to peer with
+      AtlasCidrBlock:
+        default: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
@@ -183,6 +186,9 @@ Parameters:
     Description: MongoDB Atlas Database User Password.
     Type: String
     NoEcho: true
+  AtlasCidrBlock:
+    Type: String
+    Description: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
@@ -222,6 +228,7 @@ Resources:
         VPC: !Ref VPC
         DatabaseUserName: !Ref DatabaseUserName
         DatabasePassword: !Ref DatabasePassword
+        AtlasCidrBlock: !Ref AtlasCidrBlock
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM role database cluster access."

@@ -205,7 +205,7 @@ Resources:
       Profile:  !Ref "Profile"
       Username: !Ref "DatabaseUserName"
       Password: !Ref "DatabasePassword"
-      DatabaseName:  "$external"
+      DatabaseName:  "admin"
       Roles:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"

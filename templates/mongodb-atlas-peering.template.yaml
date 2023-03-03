@@ -11,6 +11,7 @@ Metadata:
       - VPC
       - RouteTableCIDRBlock
       - VPCRegion
+      - AtlasCidrBlock
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
@@ -28,6 +29,8 @@ Metadata:
     ParameterLabels:
       VPC:
         default: VPC-id to peer with Atlas cluster
+      AtlasCidrBlock:
+        default: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
       RouteTableCIDRBlock:
         default: CIDR block for app to use in VPC Peering.
       Profile:
@@ -142,6 +145,9 @@ Parameters:
     Description: MongoDB Atlas Database User Password.
     Type: String
     NoEcho: true
+  AtlasCidrBlock:
+    Type: String
+    Description: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation that MongoDB Cloud uses for the network peering containers in your project.
 Resources:
   AtlasIAMRole:
     Type: AWS::IAM::Role
@@ -170,6 +176,7 @@ Resources:
           Comment: "Testing open all ips"
   AtlasNetworkPeering:
     Type: MongoDB::Atlas::NetworkPeering
+    DependsOn: NetworkContainer
     Properties:
       ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
@@ -177,6 +184,7 @@ Resources:
       AwsAccountId: !Sub "${AWS::AccountId}"
       RouteTableCIDRBlock: !Ref "RouteTableCIDRBlock"
       VpcId: !Ref "VPC"
+      ContainerId: !GetAtt "NetworkContainer.Id"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
@@ -216,13 +224,20 @@ Resources:
       Profile:  !Ref "Profile"
       Username: !Ref "DatabaseUserName"
       Password: !Ref "DatabasePassword"
-      DatabaseName:  "$external"
+      DatabaseName:  "admin"
       Roles:
         - RoleName: "readWrite"
           DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
         - Name: !Sub "${AWS::StackName}"
           Type: "CLUSTER"
+  NetworkContainer:
+    Type: MongoDB::Atlas::NetworkContainer
+    DependsOn: AtlasCluster
+    Properties:
+      AtlasCidrBlock: !Ref AtlasCidrBlock
+      RegionName: !Ref ClusterRegion
+      ProjectId: !GetAtt "AtlasProject.Id"
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM Role database cluster access"
