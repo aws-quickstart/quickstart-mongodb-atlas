@@ -172,7 +172,7 @@ Resources:
       ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
       AccessList:
-        - IPAddress: "0.0.0.0/1"
+        - IPAddress: "0.0.0.0/0"
           Comment: "Testing open all ips"
   AtlasNetworkPeering:
     Type: MongoDB::Atlas::NetworkPeering
@@ -229,7 +229,7 @@ Resources:
         - RoleName: "readWrite"
           DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-        - Name: !Sub "${AWS::StackName}"
+        - Name: !Ref "ClusterName"
           Type: "CLUSTER"
   NetworkContainer:
     Type: MongoDB::Atlas::NetworkContainer

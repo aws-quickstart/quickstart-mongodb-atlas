@@ -58,7 +58,7 @@ Parameters:
     Type: String
     Default: "Cluster-1"
   ClusterInstanceSize:
-    Default: "M10" 
+    Default: "M10"
     Description: Atlas provides different cluster tiers, each with a default storage capacity and RAM size. The cluster you select is used for all the data-bearing hosts in your cluster tier. See https://docs.atlas.mongodb.com/reference/amazon-aws/#amazon-aws.
     Type: String
     AllowedValues:
@@ -165,7 +165,7 @@ Resources:
       ProjectId: !GetAtt "AtlasProject.Id"
       Profile: !Ref "Profile"
       AccessList:
-      - IPAddress: "0.0.0.0/1"
+      - IPAddress: "0.0.0.0/0"
         Comment: "Testing open all ips"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
@@ -210,7 +210,7 @@ Resources:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-      - Name: !Sub "${AWS::StackName}"
+      - Name: !Ref "ClusterName"
         Type: "CLUSTER"
 Outputs:
   AtlasIAMRole:
