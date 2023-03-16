@@ -9,3 +9,5 @@ This Partner Solution uses MongoDB Atlas CloudFormation resource types and autom
 === Prepare your {partner-company-name} account
 
 A MongoDB Atlas programmatic API key must be generated with the appropriate permissions and network access entries so that AWS CloudFormation can successfully authenticate the MongoDB cloud. For more information about creating and managing API keys, see https://docs.atlas.mongodb.com/tutorial/manage-programmatic-access[Programmatic Access to Atlas^].
+
+After creating the programmatic API key, store it as a secret in AWS Secrets Manager with the following naming convention: `cfn/atlas/profile/${ProfileName}`. Use this https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/examples/profile-secret.yaml[CloudFormation template^] to create the secret in the AWS Region where this Partner Solution will be deployed.
