@@ -15,7 +15,7 @@ Metadata:
         default: Network configuration
       Parameters:
       - AvailabilityZones
-      - VPCCIDR
+      - AtlasCidrBlock
       - PrivateSubnet1CIDR
       - PrivateSubnet2CIDR
       - PublicSubnet1CIDR
@@ -24,8 +24,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas API key configuration
       Parameters:
-      - PublicKey
-      - PrivateKey 
+      - Profile
       - OrgId
     - Label:
         default: MongoDB Atlas configuration
@@ -36,6 +35,8 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - DatabaseUserName
+      - DatabasePassword
     - Label:
         default: AWS Quick Start configuration
       Parameters:
@@ -47,6 +48,8 @@ Metadata:
         default: Availability Zones
       VPCCIDR:
         default: VPC CIDR.
+      AtlasCidrBlock:
+        default: AtlasCidrBlock - IP addresses expressed in (CIDR) notation.
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -63,10 +66,8 @@ Metadata:
         default: Quick Start S3 bucket Region
       RouteTableCIDRBlock:
         default: VPC peering CIDR block
-      PublicKey:
-        default: MongoDB Atlas API public key
-      PrivateKey:
-        default: MongoDB Atlas API private key
+      Profile:
+        default: A secret with name cfn/atlas/profile/{Profile}
       OrgId:
         default: MongoDB Atlas API organization ID
       ActivateMongoDBResources:
@@ -81,6 +82,10 @@ Metadata:
         default: AWS Region for Atlas cluster
       ClusterInstanceSize:
         default: MongoDB Atlas instance size
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
   AvailabilityZones:
     Description: List of Availability Zones to use for the VPC subnets.
@@ -116,14 +121,14 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC.
     Type: String
-  PublicKey:
-    Description: "Your MongoDB cloud public API key."
+  AtlasCidrBlock:
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB cloud private API key."
+    Description: AtlasCidrBlock - IP addresses expressed in (CIDR) notation.
+    Default: 10.8.0.0/21
+  Profile:
+    Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB cloud organization ID."
     Type: String
@@ -234,6 +239,14 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
       hosted. If you use your own bucket, you must specify this value.
     Type: String
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
@@ -270,14 +283,16 @@ Resources:
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
-        PrivateKey: !Ref PrivateKey
-        PublicKey: !Ref PublicKey
+        Profile: !Ref Profile
         RouteTableCIDRBlock: !Ref RouteTableCIDRBlock
         VPC: !GetAtt VPCStack.Outputs.VPCID
         ActivateMongoDBResources: !Ref ActivateMongoDBResources
         QSS3BucketName: !Ref QSS3BucketName
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
+        AtlasCidrBlock: !Ref AtlasCidrBlock
 
 Outputs:
   AtlasIAMRole:

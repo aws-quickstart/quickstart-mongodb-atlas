@@ -14,8 +14,7 @@ Metadata:
       - Label:
           default: MongoDB Atlas ApiKey Configuration
         Parameters:
-          - PublicKey
-          - PrivateKey
+          - Profile
           - OrgId
       - Label:
           default: MongoDB Atlas Configuration
@@ -27,6 +26,8 @@ Metadata:
           - DatabaseUserRoleDatabaseName
           - ActivateMongoDBResources
           - AvailabilityZone
+          - DatabaseUserName
+          - DatabasePassword
       - Label:
           default: AWS Quick Start configuration
         Parameters:
@@ -34,10 +35,8 @@ Metadata:
           - QSS3KeyPrefix
           - QSS3BucketRegion
     ParameterLabels:
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: A secret with the name cfn/atlas/profile/{Profile}
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -49,7 +48,7 @@ Metadata:
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
       DatabaseUserRoleDatabaseName:
-        default: MongoDB Atlas Database User Role Database Name
+        default: MongoDB Atlas Database Name
       ActivateMongoDBResources:
         default: Activate MongoDB Atlas CloudFormation resources
       VPCCIDR:
@@ -60,15 +59,15 @@ Metadata:
         default: AZ fo subnet
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with the cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -225,6 +224,14 @@ Parameters:
     Description: AZ for subnet creation
     Type: String
     Default: "us-east-1a"
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
@@ -249,13 +256,14 @@ Resources:
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
-        PrivateKey: !Ref PrivateKey
-        PublicKey: !Ref PublicKey
+        Profile: !Ref Profile
         PrivateSubnetCIDR: !Ref PrivateSubnetCIDR
         VPCCIDR: !Ref VPCCIDR
         AvailabilityZone: !Ref AvailabilityZone
         VPCRegion: !Ref VPCRegion
         DatabaseUserRoleDatabaseName: !Ref DatabaseUserRoleDatabaseName
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
   ActivateAtlasResources:
     Condition: ActivateResources
     Type: AWS::CloudFormation::Stack

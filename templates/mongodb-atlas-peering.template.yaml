@@ -11,12 +11,11 @@ Metadata:
       - VPC
       - RouteTableCIDRBlock
       - VPCRegion
+      - AtlasCidrBlock
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
-      - PublicKey
-      - PrivateKey
-      - OrgId
+      - Profile
     - Label:
         default: MongoDB Atlas Configuration
       Parameters:
@@ -25,15 +24,17 @@ Metadata:
       - ClusterRegion
       - ClusterInstanceSize
       - DatabaseUserRoleDatabaseName
+      - DatabaseUserName
+      - DatabasePassword
     ParameterLabels:
       VPC:
         default: VPC-id to peer with Atlas cluster
+      AtlasCidrBlock:
+        default: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
       RouteTableCIDRBlock:
         default: CIDR block for app to use in VPC Peering.
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: A secret with name cfn/atlas/profile/{Profile}
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -48,15 +49,15 @@ Metadata:
         default: MongoDB Atlas Database User Role Database Name
       VPCRegion:
         default: The AWS Region for VPC
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -135,9 +136,9 @@ Parameters:
       - "5.0"
       - "6.0"
   DatabaseUserRoleDatabaseName:
-    Description: Database User Role Database Name
+    Description: Database Name
     Type: String
-    Default: "test"
+    Default: "admin"
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: VPC-ID of your existing Virtual Private Cloud (VPC) which you wish to peer to your new MongoDB Atlas cluster. This is the VPC that your application uses usually.
@@ -148,19 +149,18 @@ Parameters:
     Default: 'us-east-1'
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. If you use your own bucket, you must specify this value.
     Type: String
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
+  AtlasCidrBlock:
+    Type: String
+    Description: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation that MongoDB Cloud uses for the network peering containers in your project.
 Resources:
-  AtlasApiKeySecret:
-    Type: 'AWS::SecretsManager::Secret'
-    Properties:
-      Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: MongoDB Atlas API Key
-      #
-      # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
-      #
-      SecretString: !Join ['', ['{"PublicKey":"', !Ref "PublicKey",'", "PrivateKey":"', !Ref "PrivateKey", '", "OrgId":"', !Ref "OrgId", '"}'] ]
-      Tags:
-        - Key: mongodb-atlas-quickstart-stack
-          Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -176,38 +176,32 @@ Resources:
     DependsOn: AtlasIAMRole
     Properties:
       OrgId: !Ref "OrgId"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      Profile:  !Ref "Profile"
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
-      ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      ProjectId: !GetAtt "AtlasProject.Id"
+      Profile:  !Ref "Profile"
       AccessList:
-        - IPAddress: "0.0.0.0/1"
+        - IPAddress: "0.0.0.0/0"
           Comment: "Testing open all ips"
   AtlasNetworkPeering:
     Type: MongoDB::Atlas::NetworkPeering
+    DependsOn: NetworkContainer
     Properties:
-      ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      ProjectId: !GetAtt "AtlasProject.Id"
+      Profile:  !Ref "Profile"
       AccepterRegionName: !Ref "VPCRegion"
       AwsAccountId: !Sub "${AWS::AccountId}"
       RouteTableCIDRBlock: !Ref "RouteTableCIDRBlock"
       VpcId: !Ref "VPC"
+      ContainerId: !GetAtt "NetworkContainer.Id"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
-      ApiKeys:
-        PublicKey: !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
-      ProjectId: !Ref "AtlasProject"
+      Profile:  !Ref "Profile"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
@@ -238,19 +232,25 @@ Resources:
     Type: MongoDB::Atlas::DatabaseUser
     DependsOn: AtlasCluster
     Properties:
-      ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
-      Username: !GetAtt "AtlasIAMRole.Arn"
-      DatabaseName: "$external"
-      AWSIAMType: "ROLE"
+      ProjectId: !GetAtt "AtlasProject.Id"
+      Profile:  !Ref "Profile"
+      Username: !Ref "DatabaseUserName"
+      Password: !Ref "DatabasePassword"
+      DatabaseName:  "admin"
       Roles:
         - RoleName: "readWrite"
           DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-        - Name: !Sub "${AWS::StackName}"
+        - Name: !Ref "ClusterName"
           Type: "CLUSTER"
+  NetworkContainer:
+    Type: MongoDB::Atlas::NetworkContainer
+    DependsOn: AtlasCluster
+    Properties:
+      Profile:  !Ref "Profile"
+      AtlasCidrBlock: !Ref AtlasCidrBlock
+      RegionName: !Ref ClusterRegion
+      ProjectId: !GetAtt "AtlasProject.Id"
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM Role database cluster access"

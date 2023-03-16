@@ -16,11 +16,11 @@ Metadata:
       Parameters:
       - VPC
       - RouteTableCIDRBlock
+      - AtlasCidrBlock
     - Label:
         default: MongoDB Atlas API key configuration
       Parameters:
-      - PublicKey
-      - PrivateKey 
+      - Profile
       - OrgId
     - Label:
         default: MongoDB Atlas configuration
@@ -31,6 +31,8 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - DatabaseUserName
+      - DatabasePassword
     - Label:
         default: AWS Quick Start configuration
       Parameters:
@@ -40,6 +42,8 @@ Metadata:
     ParameterLabels:
       VPC:
         default: AWS VPC to peer with
+      AtlasCidrBlock:
+        default: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
@@ -48,10 +52,8 @@ Metadata:
         default: Quick Start S3 bucket Region
       RouteTableCIDRBlock:
         default: VPC peering CIDR block
-      PublicKey:
+      Profile:
         default: MongoDB Atlas API public key
-      PrivateKey:
-        default: MongoDB Atlas API private key
       OrgId:
         default: MongoDB Atlas API organization ID
       ActivateMongoDBResources:
@@ -66,15 +68,15 @@ Metadata:
         default: AWS Region for Atlas cluster
       ClusterInstanceSize:
         default: MongoDB Atlas instance size
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
-  PublicKey:
-    Description: "MongoDB cloud public API key."
+  Profile:
+    Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "MongoDB cloud private API key."
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "MongoDB cloud organization ID."
     Type: String
@@ -188,6 +190,17 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
       hosted. If you use your own bucket, you must specify this value.
     Type: String
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
+  AtlasCidrBlock:
+    Type: String
+    Description: IP addresses expressed in Classless Inter-Domain Routing (CIDR) notation.
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
@@ -221,11 +234,13 @@ Resources:
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
-        PrivateKey: !Ref PrivateKey
-        PublicKey: !Ref PublicKey
+        Profile: !Ref Profile
         RouteTableCIDRBlock: !Ref RouteTableCIDRBlock
         VPCRegion: !Ref QSS3BucketRegion
         VPC: !Ref VPC
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
+        AtlasCidrBlock: !Ref AtlasCidrBlock
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM role database cluster access."

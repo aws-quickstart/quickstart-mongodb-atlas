@@ -14,8 +14,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas API key configuration
       Parameters:
-      - PublicKey
-      - PrivateKey 
+      - Profile
       - OrgId
     - Label:
         default: MongoDB Atlas configuration
@@ -26,6 +25,8 @@ Metadata:
       - ClusterName
       - ClusterRegion
       - ClusterInstanceSize
+      - DatabaseUserName
+      - DatabasePassword
     - Label:
         default: AWS Quick Start configuration
       Parameters:
@@ -33,10 +34,8 @@ Metadata:
       - QSS3KeyPrefix
       - QSS3BucketRegion
     ParameterLabels:
-      PublicKey:
-        default: MongoDB Atlas API public key
-      PrivateKey:
-        default: MongoDB Atlas API private key
+      Profile:
+        default: "A secret with name cfn/atlas/profile/{Profile}"
       OrgId:
         default: MongoDB Atlas API organization ID
       ActivateMongoDBResources:
@@ -57,16 +56,15 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+        default: MongoDB Atlas Database User Password
 Parameters:
-  PublicKey:
-    Description: "MongoDB cloud public API key."
+  Profile:
+    Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "MongoDB cloud private API key."
-    Type: String
-    NoEcho: true
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "MongoDB cloud organization ID."
     Type: String
@@ -174,6 +172,14 @@ Parameters:
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
       hosted. If you use your own bucket, you must specify this value.
     Type: String
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   ActivateResources: !Equals [!Ref ActivateMongoDBResources, 'Yes']
@@ -207,8 +213,9 @@ Resources:
         ClusterName: !Ref ClusterName
         ClusterRegion: !Ref ClusterRegion
         OrgId: !Ref OrgId
-        PrivateKey: !Ref PrivateKey
-        PublicKey: !Ref PublicKey
+        Profile: !Ref Profile
+        DatabaseUserName: !Ref DatabaseUserName
+        DatabasePassword: !Ref DatabasePassword
 Outputs:
   AtlasIAMRole:
     Description: "ARN for AWS IAM role database cluster access."

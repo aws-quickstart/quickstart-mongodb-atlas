@@ -8,8 +8,7 @@ Metadata:
     - Label:
         default: MongoDB Atlas ApiKey Configuration
       Parameters:
-      - PublicKey
-      - PrivateKey 
+      - Profile
       - OrgId
     - Label:
         default: MongoDB Atlas Configuration
@@ -23,11 +22,11 @@ Metadata:
       - PrivateSubnetCIDR
       - AvailabilityZone
       - VPCRegion
+      - DatabaseUserName
+      - DatabasePassword
     ParameterLabels:
-      PublicKey:
-        default: MongoDB Atlas API PublicKey
-      PrivateKey:
-        default: MongoDB Atlas API PrivateKey
+      Profile:
+        default: Secret profile
       OrgId:
         default: MongoDB Atlas API OrgId
       ProjectName:
@@ -48,15 +47,15 @@ Metadata:
         default: AZ for subnet
       VPCRegion:
         default: The AWS Region for VPC private endpoint.
+      DatabaseUserName:
+        default: MongoDB Atlas Database User  Name
+      DatabasePassword:
+          default: MongoDB Atlas Database User Password
 Parameters:
-  PublicKey:
-    Description: "Your MongoDB Cloud Public API Key"
+  Profile:
+    Description: "A secret with the cfn/atlas/profile/{Profile}"
     Type: String
-    Default: "PublicKey"
-  PrivateKey:
-    Description: "Your MongoDB Cloud Private API Key"
-    Type: String
-    Default: "PrivateKey"
+    Default: "default"
   OrgId:
     Description: "Your MongoDB Cloud Organization Id"
     Type: String
@@ -71,7 +70,7 @@ Parameters:
     Type: String
     Default: "Cluster-1"
   ClusterInstanceSize:
-    Default: "M10" 
+    Default: "M10"
     Description: Atlas provides different cluster tiers, each with a default storage capacity and RAM size. The cluster you select is used for all the data-bearing hosts in your cluster tier. See https://docs.atlas.mongodb.com/reference/amazon-aws/#amazon-aws.
     Type: String
     AllowedValues:
@@ -135,7 +134,7 @@ Parameters:
     - "5.0"
     - "6.0"
   DatabaseUserRoleDatabaseName:
-    Description: Database User Role Database Name
+    Description: Database Name
     Type: String
     Default: "test"
   PrivateSubnetCIDR:
@@ -182,19 +181,15 @@ Parameters:
       - "eu-south-1"
       - "me-south-1"
       - "af-south-1"
+  DatabaseUserName:
+    Description: MongoDB Atlas Database User  Name.
+    Type: String
+    Default: "testUser"
+  DatabasePassword:
+    Description: MongoDB Atlas Database User Password.
+    Type: String
+    NoEcho: true
 Resources:
-  AtlasApiKeySecret:
-    Type: 'AWS::SecretsManager::Secret'
-    Properties:
-      Name: !Sub "${AWS::StackName}-ApiKey-Secret"
-      Description: MongoDB Atlas API Key
-      #
-      # { "PublicKey" : "xxx", "PrivateKey", "yyy", "OrgId": "zzz" }
-      #
-      SecretString: !Join ['', ['{"PublicKey":"', !Ref "PublicKey",'", "PrivateKey":"', !Ref "PrivateKey", '", "OrgId":"', !Ref "OrgId", '"}'] ]
-      Tags:
-      - Key: mongodb-atlas-quickstart-stack 
-        Value: !Sub "${AWS::StackName}"
   AtlasIAMRole:
     Type: AWS::IAM::Role
     Properties:
@@ -205,32 +200,34 @@ Resources:
           Principal:
             AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
           Action: 'sts:AssumeRole'
+        - Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Service: ecs-tasks.amazonaws.com
+          Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
   AtlasProject:
     Type: MongoDB::Atlas::Project
     DependsOn: AtlasIAMRole
     Properties:
-      OrgId: !Ref "OrgId" 
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      OrgId: !Ref "OrgId"
+      Profile: !Ref "Profile"
       Name: !Ref "ProjectName"
   AtlasProjectIPAccessList:
     Type: MongoDB::Atlas::ProjectIpAccessList
     Properties:
-      ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      ProjectId: !GetAtt "AtlasProject.Id"
+      Profile: !Ref "Profile"
       AccessList:
-      - IPAddress: "0.0.0.0/1"
+      - IPAddress: "0.0.0.0/0"
         Comment: "Testing open all ips"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
     Properties:
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
-      ProjectId: !Ref "AtlasProject"
+      Profile: !Ref "Profile"
+      ProjectId: !GetAtt "AtlasProject.Id"
       Name: !Ref "ClusterName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
@@ -256,27 +253,23 @@ Resources:
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
-      ProjectId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey:  !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
-      Username: !GetAtt "AtlasIAMRole.Arn"
-      DatabaseName: "$external"
-      AWSIAMType: "ROLE"
+      ProjectId: !GetAtt "AtlasProject.Id"
+      Profile: !Ref "Profile"
+      Username: !Ref "DatabaseUserName"
+      Password: !Ref "DatabasePassword"
+      DatabaseName: "admin"
       Roles:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-      - Name: !Sub "${AWS::StackName}"
+      - Name: !Ref "ClusterName"
         Type: "CLUSTER"
   PrivateEndpoint:
     Type: MongoDB::Atlas::PrivateEndpoint
     DependsOn: AtlasCluster
     Properties:
-      GroupId: !Ref "AtlasProject"
-      ApiKeys:
-        PublicKey: !Ref "PublicKey"
-        PrivateKey: !Ref "PrivateKey"
+      GroupId: !GetAtt "AtlasProject.Id"
+      Profile: !Ref "Profile"
       Region: !Ref "VPCRegion"
       PrivateEndpoints:
         - VpcId: !Ref PrivateVPC
