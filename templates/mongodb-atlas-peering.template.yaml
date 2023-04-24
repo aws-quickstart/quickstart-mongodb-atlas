@@ -188,7 +188,6 @@ Resources:
           Comment: "Testing open all ips"
   AtlasNetworkPeering:
     Type: MongoDB::Atlas::NetworkPeering
-    DependsOn: NetworkContainer
     Properties:
       ProjectId: !GetAtt "AtlasProject.Id"
       Profile:  !Ref "Profile"
@@ -199,6 +198,7 @@ Resources:
       ContainerId: !GetAtt "NetworkContainer.Id"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
+    DependsOn: NetworkContainer # Important to wait for the Network Container, otherwise the network container deletion will fail when deleting the stack
     Properties:
       Profile:  !Ref "Profile"
       ProjectId: !GetAtt "AtlasProject.Id"
@@ -245,7 +245,6 @@ Resources:
           Type: "CLUSTER"
   NetworkContainer:
     Type: MongoDB::Atlas::NetworkContainer
-    DependsOn: AtlasCluster
     Properties:
       Profile:  !Ref "Profile"
       AtlasCidrBlock: !Ref AtlasCidrBlock
