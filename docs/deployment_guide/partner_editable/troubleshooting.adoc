@@ -6,6 +6,8 @@ Errors can typically be resolved by inspecting the CloudFormation event logs or 
 
 If a stack fails to deploy, check the *Events* tab. If the error occurs for one of the MongoDB Atlas resources (for example, MongoDB::Atlas::Cluster), you will find a corresponding Amazon CloudWatch Logs group called *mongodb-atlas-cluster-logs*. Locate this group, and check the latest log entry to identify the issue.
 
+If you receive a *NO_PAYMENT_INFORMATION_FOUND* error message when deploying a MongoDB cluster using the pay-as-you-go option, most likely your AWS account is not linked to your MongoDB Atlas account. For more information, see the link:#_costs_and_licenses[Costs and Licenses] section in this guide. 
+
 // == Resources
 // Uncomment section and add links to any external resources that are specified by the partner.
 
