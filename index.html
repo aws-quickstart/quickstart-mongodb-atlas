@@ -964,6 +964,9 @@ Refer to the <a href="https://github.com/aws-quickstart/quickstart-mongodb-atlas
 <p>There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the <a href="https://fwd.aws/rA69w?" target="_blank" rel="noopener">AWS Partner Solution General Information Guide</a>.</p>
 </div>
 <div class="paragraph">
+<p>If deploying a MongoDB Atlas cluster using the pay-as-you-go option, first subscribe to <a href="https://aws.amazon.com/marketplace/pp/prodview-pp445qepfdy34?trk=40d3b1cd-4a6c-4cfe-a334-cd0f4ab9808e&amp;sc_channel=el" target="_blank" rel="noopener">MongoDB Atlas (pay-as-you-go)</a> on AWS Marketplace and then link your AWS account to your MongoDB Atlas account. For more information, refer to <a href="https://www.mongodb.com/docs/atlas/billing/aws-self-serve-marketplace/#link-an-aws-billing-account-to-mongodb-service" target="_blank" rel="noopener">Link an AWS Billing Account to MongoDB Atlas</a>.</p>
+</div>
+<div class="paragraph">
 <p>This Partner Solution deploys MongoDB Atlas with the latest stable MongoDB enterprise version, which is licensed and distributed under the <a href="https://www.mongodb.com/licensing/server-side-public-license" target="_blank" rel="noopener">Server Side Public License (SSPL)</a>.</p>
 </div>
 </div>
@@ -1182,6 +1185,9 @@ Unless you&#8217;re customizing the Partner Solution templates or are instructed
 <div class="paragraph">
 <p>If a stack fails to deploy, check the <strong>Events</strong> tab. If the error occurs for one of the MongoDB Atlas resources (for example, MongoDB::Atlas::Cluster), you will find a corresponding Amazon CloudWatch Logs group called <strong>mongodb-atlas-cluster-logs</strong>. Locate this group, and check the latest log entry to identify the issue.</p>
 </div>
+<div class="paragraph">
+<p>If you receive a <strong>NO_PAYMENT_INFORMATION_FOUND</strong> error message when deploying a MongoDB cluster using the pay-as-you-go option, most likely your AWS account is not linked to your MongoDB Atlas account. For more information, see the <a href="#_costs_and_licenses">Costs and Licenses</a> section in this guide.</p>
+</div>
 <div class="sect2">
 <h3 id="_faq">FAQ</h3>
 <div class="paragraph">
@@ -1255,7 +1261,7 @@ Unless you&#8217;re customizing the Partner Solution templates or are instructed
 </html>
 <!--
 repo commit:
-499fdc7c50f375b2a899044d179f97c13dc61bae
+e8c8d609d6a285f6196fa96d367a705e508a08b6
 
 submodule config:
  897d0a2f9b90fcdbc9520a2d0d44558d485a5b1e docs/boilerplate (897d0a2)

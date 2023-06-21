@@ -2,4 +2,6 @@
 
 There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^].
 
+If deploying a MongoDB Atlas cluster using the pay-as-you-go option, first subscribe to https://aws.amazon.com/marketplace/pp/prodview-pp445qepfdy34?trk=40d3b1cd-4a6c-4cfe-a334-cd0f4ab9808e&sc_channel=el[MongoDB Atlas (pay-as-you-go)^] on AWS Marketplace and then link your AWS account to your MongoDB Atlas account. For more information, refer to https://www.mongodb.com/docs/atlas/billing/aws-self-serve-marketplace/#link-an-aws-billing-account-to-mongodb-service[Link an AWS Billing Account to MongoDB Atlas^]. 
+
 This Partner Solution deploys MongoDB Atlas with the latest stable MongoDB enterprise version, which is licensed and distributed under the https://www.mongodb.com/licensing/server-side-public-license[Server Side Public License (SSPL)^].
