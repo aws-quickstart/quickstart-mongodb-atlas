@@ -31,7 +31,6 @@ Metadata:
       - DatabasePassword
     - Label:
         default: Atlas Cluster configuration
-      Condition: CreateCluster
       Parameters:
       - ClusterMongoDBMajorVersion
       - InstanceName
@@ -39,7 +38,6 @@ Metadata:
       - ClusterInstanceSize
     - Label:
         default: Atlas Serverless configuration
-      Condition: CreateServerless
       Parameters:
       - ServerlessProviderName
       - ServerlessTerminationProtectionEnabled
