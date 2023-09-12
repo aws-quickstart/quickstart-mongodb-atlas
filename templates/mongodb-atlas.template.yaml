@@ -14,8 +14,8 @@ Metadata:
         default: MongoDB Atlas Configuration
       Parameters:
       - ProjectName
-      - ClusterName
-      - ClusterRegion
+      - InstanceName
+      - Region
       - ClusterInstanceSize
       - DatabaseUserRoleDatabaseName
       - DatabaseUserName
@@ -27,10 +27,10 @@ Metadata:
         default: MongoDB Atlas API OrgId
       ProjectName:
         default: Name of new Atlas Project
-      ClusterName:
-        default: Name of new cluster
-      ClusterRegion:
-        default: The AWS Region for Atlas Cluster
+      InstanceName:
+        default: Name of new cluster or the serverless Instance to be created
+      Region:
+        default: The AWS Region for Atlas Cluster or the serverless instance created
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
       DatabaseUserRoleDatabaseName:
@@ -40,6 +40,33 @@ Metadata:
       DatabasePassword:
         default: MongoDB Atlas Database User Password
 Parameters:
+  InstanceType:
+    Description: 'choose wich instance you want to create'
+    Type: String
+    Default: 'Dedicated Cluster'
+    AllowedValues:
+      - 'Dedicated Cluster'
+      - 'Serverless Instance'
+  ServerlessProviderName:
+    Type: String
+    Description: Human-readable label that identifies the cloud service provider. Used only on the Serverless Instance
+    Default: "SERVERLESS"
+  ServerlessTerminationProtectionEnabled: 
+    Type: String
+    Description: Flag that indicates whether termination protection is enabled on the serverless instance. If set to true MongoDB Cloud won't delete the serverless instance. If set to false MongoDB cloud will delete the serverless instance.
+    ConstraintDescription: boolean
+    AllowedValues: 
+      - "true"
+      - "false"
+    Default: false
+  ServerlessContinuousBackupEnabled: 
+    Type: String
+    Description: Flag that indicates whether the serverless instances uses Serverless Continuous Backup. If this parameter is false the serverless instance uses Basic Backup. | Option | Description | |---|---| | Serverless Continuous Backup | Atlas takes incremental snapshots of the data in your serverless instance every six hours and lets you restore the data from a selected point in time within the last 72 hours. Atlas also takes daily snapshots and retains these daily snapshots for 35 days. To learn more see Serverless Instance Costs. | | Basic Backup | Atlas takes incremental snapshots of the data in your serverless instance every six hours and retains only the two most recent snapshots. You can use this option for free. 
+    ConstraintDescription: boolean
+    AllowedValues: 
+      - "true"
+      - "false"
+    Default: true
   Profile:
     Description: "A secret with name cfn/atlas/profile/{Profile}"
     Type: String
@@ -52,8 +79,8 @@ Parameters:
     Description: "The name of the project."
     Type: String
     Default: "aws-quickstart"
-  ClusterName:
-    Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
+  InstanceName:
+    Description: Name of the cluster or the serverless instances as it appears in Atlas. Once the cluster/serverlessInstance is created,
       its name cannot be changed.
     Type: String
     Default: "Cluster-1"
@@ -86,7 +113,7 @@ Parameters:
       - "R400"
       - "M400_NVME"
       - "R700"
-  ClusterRegion:
+  Region:
     Default: "US_EAST_1"
     Description: AWS Region where the Atlas database runs.
     Type: String
@@ -131,6 +158,9 @@ Parameters:
     Description: MongoDB Atlas Database User Password.
     Type: String
     NoEcho: true
+Conditions:
+  CreateCluster: !Equals [!Ref InstanceType, 'Dedicated Cluster']
+  CreateServerless: !Equals [!Ref InstanceType, 'Serverless Instance']
 Resources:
   AtlasIAMRole:
     Type: AWS::IAM::Role
@@ -165,12 +195,25 @@ Resources:
       AccessList:
       - IPAddress: "0.0.0.0/0"
         Comment: "Testing open all ips"
+  AtlasServerlessInstance:
+    Type: MongoDB::Atlas::ServerlessInstance
+    Condition: CreateServerless
+    Properties:
+      Name: !Ref "InstanceName"
+      Profile: !Ref "Profile"
+      ProjectID: !GetAtt "AtlasProject.Id"
+      ProviderSettings:
+        RegionName: !Ref "Region"
+        ProviderName: !Ref "ServerlessProviderName"
+      TerminationProtectionEnabled: !Ref "ServerlessTerminationProtectionEnabled"
+      ContinuousBackupEnabled : !Ref "ServerlessContinuousBackupEnabled"
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
+    Condition: CreateCluster
     Properties:
       Profile: !Ref "Profile"
       ProjectId: !GetAtt "AtlasProject.Id"
-      Name: !Ref "ClusterName"
+      Name: !Ref "InstanceName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
       ReplicationSpecs:
@@ -195,7 +238,7 @@ Resources:
                 InstanceSize: !Ref "ClusterInstanceSize"
                 NodeCount: '3'
               Priority: '7'
-              RegionName: !Ref ClusterRegion
+              RegionName: !Ref Region
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
@@ -208,7 +251,7 @@ Resources:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-      - Name: !Ref "ClusterName"
+      - Name: !Ref "InstanceName"
         Type: "CLUSTER"
 Outputs:
   AtlasIAMRole:
@@ -232,18 +275,24 @@ Outputs:
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","AtlasProjectIPAccessList" ] ]
   AtlasCluster:
+    Condition: CreateCluster
     Description: "Info on your Atlas Cluster"
     Value: !Ref AtlasCluster
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","AtlasCluster" ] ]
   ClusterState:
+    Condition: CreateCluster
     Description: "Cluster State"
     Value: !GetAtt "AtlasCluster.StateName"
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","ClusterState" ] ]
   ClusterSrvAddress:
+    Condition: CreateCluster
     Description: "Hostname for mongodb+srv:// connection string"
     Value: !GetAtt "AtlasCluster.ConnectionStrings.StandardSrv"
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","ClusterSrvAddress" ] ]
-
+  ServerlessConnectionStr:
+    Condition: CreateServerless
+    Description: "Id of the Serverless Instances"
+    Value: !GetAtt "AtlasServerlessInstance.ConnectionStrings.StandardSrv"

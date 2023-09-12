@@ -14,6 +14,11 @@ Parameters:
     Description: The AWS Region where resources would be activated
     Type: String
     AllowedValues:
+    - "ap-south-2"
+    - "ap-southeast-4"
+    - "eu-central-2"
+    - "eu-south-2"
+    - "me-central-1"
     - "us-east-1"
     - "us-east-2"
     - "ca-central-1"
@@ -44,6 +49,13 @@ Resources:
       PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-Cluster' ] ]
       Type: RESOURCE
       TypeName: MongoDB::Atlas::Cluster
+      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
+  ActivateServerlessInstanceType:
+    Type: AWS::CloudFormation::TypeActivation
+    Properties:
+      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessInstance' ] ]
+      Type: RESOURCE
+      TypeName: MongoDB::Atlas::ServerlessInstance
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateProjectIpAccessListType:
     Type: AWS::CloudFormation::TypeActivation
