@@ -34,8 +34,8 @@ Metadata:
       Condition: CreateCluster
       Parameters:
       - ClusterMongoDBMajorVersion
-      - ClusterName
-      - ClusterRegion
+      - InstanceName
+      - Region
       - ClusterInstanceSize
     - Label:
         default: Atlas Serverless configuration
@@ -48,7 +48,6 @@ Metadata:
         default: AWS Quick Start configuration
       Parameters:
       - QSS3BucketName
-      - QSS3KeyPrefix
       - QSS3BucketRegion
     ParameterLabels:
       Profile:
@@ -61,16 +60,14 @@ Metadata:
         default: Name of new Atlas project
       ClusterMongoDBMajorVersion:
         default: MongoDB version
-      ClusterName:
+      InstanceName:
         default: Name of new cluster
-      ClusterRegion:
+      Region:
         default: AWS Region for Atlas cluster
       ClusterInstanceSize:
         default: MongoDB Atlas instance size
       QSS3BucketName:
         default: Quick Start S3 bucket name
-      QSS3KeyPrefix:
-        default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
       DatabaseUserName:
@@ -182,15 +179,6 @@ Parameters:
       numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
       or end with a hyphen (-).
     Type: String
-  QSS3KeyPrefix:
-    AllowedPattern: ^[0-9a-zA-Z-/.]*$
-    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and forward slashes (/).
-    Default: quickstart-mongodb-atlas/
-    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      forward slashes (/).
-    Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
     Description: AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
@@ -211,7 +199,7 @@ Parameters:
     AllowedValues: 
       - "true"
       - "false"
-    Default: false
+    Default: "false"
   ServerlessContinuousBackupEnabled: 
     Type: String
     Description: Flag that indicates whether the serverless instances uses Serverless Continuous Backup. If this parameter is false the serverless instance uses Basic Backup. | Option | Description | |---|---| | Serverless Continuous Backup | Atlas takes incremental snapshots of the data in your serverless instance every six hours and lets you restore the data from a selected point in time within the last 72 hours. Atlas also takes daily snapshots and retains these daily snapshots for 35 days. To learn more see Serverless Instance Costs. | | Basic Backup | Atlas takes incremental snapshots of the data in your serverless instance every six hours and retains only the two most recent snapshots. You can use this option for free. 
@@ -219,7 +207,7 @@ Parameters:
     AllowedValues: 
       - "true"
       - "false"
-    Default: true
+    Default: "true"
   DatabasePassword:
     Description: MongoDB Atlas Database User Password.
     Type: String
