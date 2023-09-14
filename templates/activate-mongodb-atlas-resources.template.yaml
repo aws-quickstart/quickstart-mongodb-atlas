@@ -53,7 +53,7 @@ Resources:
   ActivateServerlessInstanceType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessInstance' ] ]
+      PublicTypeArn: !Sub 'arn:aws:cloudformation:${Region}::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessInstance'
       Type: RESOURCE
       TypeName: MongoDB::Atlas::ServerlessInstance
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn

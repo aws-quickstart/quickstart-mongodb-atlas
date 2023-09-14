@@ -12,7 +12,7 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: Instance to be created
+        default: Instance Configuration
       Parameters:
       - InstanceType
       - InstanceName
@@ -167,6 +167,15 @@ Parameters:
     AllowedValues:
       - "No"
       - "Yes"
+  QSS3KeyPrefix:
+      AllowedPattern: ^[0-9a-zA-Z-/.]*$
+      ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+        uppercase letters, hyphens (-), and forward slashes (/).
+      Default: quickstart-mongodb-atlas/
+      Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+        can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+        forward slashes (/).
+      Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
