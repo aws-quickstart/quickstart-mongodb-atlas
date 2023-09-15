@@ -6,16 +6,22 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
-        default: MongoDB Atlas ApiKey Configuration
+        default: MongoDB Atlas Common Configuration
       Parameters:
+      - InstanceType
       - Profile
       - OrgId
-    - Label:
-        default: MongoDB Atlas Configuration
-      Parameters:
+      - InstanceName
+      - InstanceRegion
       - ProjectName
-      - ClusterName
-      - ClusterRegion
+    - Label:
+        default: MongoDB Atlas Serverless Private endpoint Configuration
+      Parameters:
+      - CreateAndAssignAWSPrivateEndpoint
+      - VpcId
+    - Label:
+        default: MongoDB Atlas Cluster Configuration
+      Parameters:
       - ClusterInstanceSize
       - DatabaseUserRoleDatabaseName
       - VPCCIDR
@@ -31,9 +37,9 @@ Metadata:
         default: MongoDB Atlas API OrgId
       ProjectName:
         default: Name of new Atlas Project
-      ClusterName:
+      InstanceName:
         default: Name of new cluster
-      ClusterRegion:
+      InstanceRegion:
         default: The AWS Region for Atlas Cluster
       ClusterInstanceSize:
         default: MongoDB Atlas Instance Size
@@ -52,6 +58,13 @@ Metadata:
       DatabasePassword:
           default: MongoDB Atlas Database User Password
 Parameters:
+  InstanceType:
+    Description: 'choose wich instance you want to create'
+    Type: String
+    Default: 'Dedicated Cluster'
+    AllowedValues:
+      - 'Dedicated Cluster'
+      - 'Serverless Instance'
   Profile:
     Description: "A secret with the cfn/atlas/profile/{Profile}"
     Type: String
@@ -64,11 +77,40 @@ Parameters:
     Description: "The name of the project."
     Type: String
     Default: "aws-quickstart"
-  ClusterName:
-    Description: Name of the cluster as it appears in Atlas. Once the cluster is created,
-      its name cannot be changed.
+  CreateAndAssignAWSPrivateEndpoint:
     Type: String
-    Default: "Cluster-1"
+    Description: "If true the resource will create the aws private endpoint and assign the Endpoint ID"
+    Default: "false"
+    AllowedValues:
+    - "true"
+    - "false"
+  VpcId:
+    Description: "String Representing the AWS VPC ID (like: vpc-xxxxxxxxxxxxxxxx) (Used For Creating the AWS VPC Endpoint)"
+    Type: String
+  ServerlessProviderName:
+    Type: String
+    Description: Human-readable label that identifies the cloud service provider. Used only on the Serverless Instance
+    Default: "SERVERLESS"
+  ServerlessTerminationProtectionEnabled: 
+    Type: String
+    Description: Flag that indicates whether termination protection is enabled on the serverless instance. If set to true MongoDB Cloud won't delete the serverless instance. If set to false MongoDB cloud will delete the serverless instance.
+    ConstraintDescription: boolean
+    AllowedValues: 
+      - "true"
+      - "false"
+    Default: "false"
+  ServerlessContinuousBackupEnabled: 
+    Type: String
+    Description: Flag that indicates whether the serverless instances uses Serverless Continuous Backup. If this parameter is false the serverless instance uses Basic Backup. | Option | Description | |---|---| | Serverless Continuous Backup | Atlas takes incremental snapshots of the data in your serverless instance every six hours and lets you restore the data from a selected point in time within the last 72 hours. Atlas also takes daily snapshots and retains these daily snapshots for 35 days. To learn more see Serverless Instance Costs. | | Basic Backup | Atlas takes incremental snapshots of the data in your serverless instance every six hours and retains only the two most recent snapshots. You can use this option for free. 
+    ConstraintDescription: boolean
+    AllowedValues: 
+      - "true"
+      - "false"
+    Default: "true"
+  InstanceName:
+    Description: Name of the cluster as it appears in Atlas. Once the cluster is created,its name cannot be changed.
+    Type: String
+    Default: "ServerlessInstance-Cluster-1"
   ClusterInstanceSize:
     Default: "M10"
     Description: Atlas provides different cluster tiers, each with a default storage capacity and RAM size. The cluster you select is used for all the data-bearing hosts in your cluster tier. See https://docs.atlas.mongodb.com/reference/amazon-aws/#amazon-aws.
@@ -98,7 +140,7 @@ Parameters:
     - "R400"
     - "M400_NVME"
     - "R700"
-  ClusterRegion:
+  InstanceRegion:
     Default: US_EAST_1
     Description: AWS Region where the Atlas database runs.
     Type: String
@@ -189,6 +231,9 @@ Parameters:
     Description: MongoDB Atlas Database User Password.
     Type: String
     NoEcho: true
+Conditions:
+  CreateCluster: !Equals [!Ref InstanceType, 'Dedicated Cluster']
+  CreateServerless: !Equals [!Ref InstanceType, 'Serverless Instance']
 Resources:
   AtlasIAMRole:
     Type: AWS::IAM::Role
@@ -223,12 +268,37 @@ Resources:
       AccessList:
       - IPAddress: "0.0.0.0/0"
         Comment: "Testing open all ips"
+  AtlasServerlessInstance:
+    Type: MongoDB::Atlas::ServerlessInstance
+    Condition: CreateServerless
+    Properties:
+      Name: !Ref InstanceName
+      Profile: !Ref "Profile"
+      ProjectID: !GetAtt "AtlasProject.Id"
+      ProviderSettings:
+        RegionName: !Ref InstanceRegion
+        ProviderName: !Ref ServerlessProviderName
+      TerminationProtectionEnabled: !Ref ServerlessTerminationProtectionEnabled
+      ContinuousBackupEnabled : !Ref ServerlessContinuousBackupEnabled
+  AtlasServerlessPrivateEndpoint:
+    Type: MongoDB::Atlas::ServerlessPrivateEndpoint
+    Condition: CreateServerless
+    DependsOn: AtlasServerlessInstance
+    Properties:
+      ProjectId: !GetAtt "AtlasProject.Id"
+      Profile: !Ref "Profile"
+      InstanceName: !Ref InstanceName
+      CreateAndAssignAWSPrivateEndpoint : !Ref CreateAndAssignAWSPrivateEndpoint
+      AwsPrivateEndpointConfigurationProperties:
+        VpcId: !Ref VpcId
+        Region: !Ref InstanceRegion
   AtlasCluster:
     Type: MongoDB::Atlas::Cluster
+    Condition: CreateCluster
     Properties:
       Profile: !Ref "Profile"
       ProjectId: !GetAtt "AtlasProject.Id"
-      Name: !Ref "ClusterName"
+      Name: !Ref "InstanceName"
       MongoDBMajorVersion: !Ref "ClusterMongoDBMajorVersion"
       ClusterType: "REPLICASET"
       ReplicationSpecs:
@@ -249,7 +319,7 @@ Resources:
                 InstanceSize: !Ref ClusterInstanceSize
                 NodeCount: '1'
               Priority: '7'
-              RegionName: !Ref ClusterRegion
+              RegionName: !Ref InstanceRegion
   AtlasDatabaseUser:
     Type: MongoDB::Atlas::DatabaseUser
     Properties:
@@ -262,10 +332,11 @@ Resources:
       - RoleName: "readWrite"
         DatabaseName: !Ref "DatabaseUserRoleDatabaseName"
       Scopes:
-      - Name: !Ref "ClusterName"
+      - Name: !Ref "InstanceName"
         Type: "CLUSTER"
   PrivateEndpoint:
     Type: MongoDB::Atlas::PrivateEndpoint
+    Condition: CreateCluster
     DependsOn: AtlasCluster
     Properties:
       GroupId: !GetAtt "AtlasProject.Id"
@@ -308,16 +379,13 @@ Outputs:
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","AtlasProjectIPAccessList" ] ]
   AtlasCluster:
+    Condition: CreateCluster
     Description: "Info on your Atlas Cluster"
     Value: !Ref AtlasCluster
     Export:
       Name: !Join [ "-", [ !Ref "AWS::StackName","AtlasCluster" ] ]
-  ClusterState:
-    Description: "Cluster State"
-    Value: !GetAtt "AtlasCluster.StateName"
-    Export:
-      Name: !Join [ "-", [ !Ref "AWS::StackName","ClusterState" ] ]
   ClusterSrvAddress:
+    Condition: CreateCluster
     Description: "Hostname for mongodb+srv:// connection string"
     Value: !GetAtt "AtlasCluster.ConnectionStrings.StandardSrv"
     Export:

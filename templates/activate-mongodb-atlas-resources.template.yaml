@@ -38,6 +38,20 @@ Parameters:
     - "me-south-1"
     - "af-south-1"
 Resources:
+  ActivateServerlessInstanceType:
+    Type: AWS::CloudFormation::TypeActivation
+    Properties:
+      PublicTypeArn: !Sub 'arn:aws:cloudformation:${Region}::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessInstance'
+      Type: RESOURCE
+      TypeName: MongoDB::Atlas::ServerlessInstance
+      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
+  ActivateServerlessPrivateEndpointType:
+    Type: AWS::CloudFormation::TypeActivation
+    Properties:
+      PublicTypeArn: !Sub 'arn:aws:cloudformation:${Region}::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessPrivateEndpoint'
+      Type: RESOURCE
+      TypeName: MongoDB::Atlas::ServerlessPrivateEndpoint
+      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateClusterType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
