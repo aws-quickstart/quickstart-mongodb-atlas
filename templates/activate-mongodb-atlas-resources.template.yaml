@@ -8,12 +8,21 @@ Metadata:
           default: MongoDB Region
         Parameters:
           - Region
+Mappings:
+  DefaultConfiguration:
+    MongoDB:
+      PublisherID: bb989456c78c398a858fef18f2ca1bfc1fbba082
 Parameters:
   Region:
     Default: us-east-1
     Description: The AWS Region where resources would be activated
     Type: String
     AllowedValues:
+    - "ap-south-2"
+    - "ap-southeast-4"
+    - "eu-central-2"
+    - "eu-south-2"
+    - "me-central-1"
     - "us-east-1"
     - "us-east-2"
     - "ca-central-1"
@@ -38,67 +47,100 @@ Parameters:
     - "me-south-1"
     - "af-south-1"
 Resources:
-  ActivateServerlessInstanceType:
-    Type: AWS::CloudFormation::TypeActivation
-    Properties:
-      PublicTypeArn: !Sub 'arn:aws:cloudformation:${Region}::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessInstance'
-      Type: RESOURCE
-      TypeName: MongoDB::Atlas::ServerlessInstance
-      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
-  ActivateServerlessPrivateEndpointType:
-    Type: AWS::CloudFormation::TypeActivation
-    Properties:
-      PublicTypeArn: !Sub 'arn:aws:cloudformation:${Region}::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ServerlessPrivateEndpoint'
-      Type: RESOURCE
-      TypeName: MongoDB::Atlas::ServerlessPrivateEndpoint
-      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateClusterType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-Cluster' ] ]
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-Cluster'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
       Type: RESOURCE
       TypeName: MongoDB::Atlas::Cluster
+      ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
+  ActivateServerlessInstanceType:
+    Type: AWS::CloudFormation::TypeActivation
+    Properties:
+      PublicTypeArn: !Sub 
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-ServerlessInstance'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
+      TypeName: MongoDB::Atlas::ServerlessInstance
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateProjectIpAccessListType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-ProjectIpAccessList' ] ]
-      Type: RESOURCE
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-ProjectIpAccessList'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
       TypeName: MongoDB::Atlas::ProjectIpAccessList
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateDatabaseUserType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-DatabaseUser' ] ]
-      Type: RESOURCE
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-DatabaseUser'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
       TypeName: MongoDB::Atlas::DatabaseUser
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateProjectType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-Project' ] ]
-      Type: RESOURCE
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-Project'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
       TypeName: MongoDB::Atlas::Project
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivateNetworkPeeringType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-NetworkPeering' ] ]
-      Type: RESOURCE
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-NetworkPeering'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
       TypeName: MongoDB::Atlas::NetworkPeering
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   ActivatePrivateEndpointType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-PrivateEndpoint' ] ]
-      Type: RESOURCE
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-PrivateEndpoint'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
       TypeName: MongoDB::Atlas::PrivateEndpoint
       ExecutionRoleArn: !GetAtt MongoDBPrivateEndpointExecutionRole.Arn
   ActivateNetworkContainerType:
     Type: AWS::CloudFormation::TypeActivation
     Properties:
-      PublicTypeArn: !Join [ "", [ 'arn:aws:cloudformation:',!Ref "Region",'::type/resource/bb989456c78c398a858fef18f2ca1bfc1fbba082/MongoDB-Atlas-NetworkContainer' ] ]
-      Type: RESOURCE
+      PublicTypeArn: !Sub
+      - 'arn:aws:cloudformation:${Region}::type/resource/${publisher_id}/MongoDB-Atlas-NetworkContainer'
+      - publisher_id: !FindInMap
+          - DefaultConfiguration
+          - MongoDB
+          - PublisherID
+        Type: RESOURCE
       TypeName: MongoDB::Atlas::NetworkContainer
       ExecutionRoleArn: !GetAtt MongoDBCustomResourceExecutionRole.Arn
   MongoDBCustomResourceExecutionRole:
