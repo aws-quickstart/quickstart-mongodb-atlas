@@ -15,6 +15,6 @@ else:
 if not profile in t:
     raise Exception(f"No profile '{profile}' found in {config}")
 d=t[profile]
-print(f"export ATLAS_PUBLIC_KEY={d['public_api_key']}")
-print(f"export ATLAS_PRIVATE_KEY={d['private_api_key']}")
-print(f"export ATLAS_ORG_ID={d['org_id']}")
+print(f"export MONGODB_ATLAS_PUBLIC_KEY={d['public_api_key']}")
+print(f"export MONGODB_ATLAS_PRIVATE_KEY={d['private_api_key']}")
+print(f"export MONGODB_ATLAS_ORG_ID={d['org_id']}")
