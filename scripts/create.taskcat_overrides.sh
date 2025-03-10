@@ -3,7 +3,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 cat << EOF
-PublicKey: "${ATLAS_PUBLIC_KEY}"
-PrivateKey: "${ATLAS_PRIVATE_KEY}"
-OrgId: "${ATLAS_ORG_ID}"
+PublicKey: "${MONGODB_ATLAS_PUBLIC_KEY}"
+PrivateKey: "${MONGODB_ATLAS_PRIVATE_KEY}"
+OrgId: "${MONGODB_ATLAS_ORG_ID}"
 EOF

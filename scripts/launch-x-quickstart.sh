@@ -8,8 +8,8 @@ echo "EXTRA_PARAMS=${EXTRA_PARAMS}"
 aws cloudformation create-stack \
   --capabilities CAPABILITY_IAM --disable-rollback \
   --template-body "file://${TEMPLATE}" \
-  --parameters ParameterKey=PublicKey,ParameterValue=${ATLAS_PUBLIC_KEY} \
-               ParameterKey=PrivateKey,ParameterValue=${ATLAS_PRIVATE_KEY} \
-               ParameterKey=OrgId,ParameterValue=${ATLAS_ORG_ID} \
+  --parameters ParameterKey=PublicKey,ParameterValue=${MONGODB_ATLAS_PUBLIC_KEY} \
+               ParameterKey=PrivateKey,ParameterValue=${MONGODB_ATLAS_PRIVATE_KEY} \
+               ParameterKey=OrgId,ParameterValue=${MONGODB_ATLAS_ORG_ID} \
                ${EXTRA_PARAMS} \
   --stack-name "${STACK_NAME}"
